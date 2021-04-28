@@ -1,0 +1,92 @@
+--- a/drivers/phy/rockchip/Kconfig
++++ b/drivers/phy/rockchip/Kconfig
+@@ -35,6 +35,15 @@ config PHY_ROCKCHIP_INNO_USB2
+ 	help
+ 	  Support for Rockchip USB2.0 PHY with Innosilicon IP block.
+ 
++config PHY_ROCKCHIP_INNO_USB3
++	tristate "Rockchip INNO USB 3.0 PHY Driver"
++	depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
++	depends on USB_SUPPORT
++	select GENERIC_PHY
++	select USB_PHY
++	help
++	  Support for Rockchip USB 3.0 PHY with Innosilicon IP block.
++
+ config PHY_ROCKCHIP_PCIE
+ 	tristate "Rockchip PCIe PHY Driver"
+ 	depends on (ARCH_ROCKCHIP && OF) || COMPILE_TEST
+
+--- a/drivers/phy/rockchip/Makefile
++++ b/drivers/phy/rockchip/Makefile
+@@ -5,6 +5,7 @@
+ obj-$(CONFIG_PHY_ROCKCHIP_INNO_DSIDPHY)	+= phy-rockchip-inno-dsidphy.o
+ obj-$(CONFIG_PHY_ROCKCHIP_INNO_HDMI)	+= phy-rockchip-inno-hdmi.o
+ obj-$(CONFIG_PHY_ROCKCHIP_INNO_USB2)	+= phy-rockchip-inno-usb2.o
++obj-$(CONFIG_PHY_ROCKCHIP_INNO_USB3)	+= phy-rockchip-inno-usb3.o
+ obj-$(CONFIG_PHY_ROCKCHIP_PCIE)		+= phy-rockchip-pcie.o
+ obj-$(CONFIG_PHY_ROCKCHIP_TYPEC)	+= phy-rockchip-typec.o
+ obj-$(CONFIG_PHY_ROCKCHIP_USB)		+= phy-rockchip-usb.o
+
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -816,6 +816,47 @@
+ 			<32768>;
+ 	};
+ 
++	usb3phy_grf: syscon@ff460000 {
++		compatible = "rockchip,usb3phy-grf", "syscon";
++		reg = <0x0 0xff460000 0x0 0x1000>;
++	};
++
++	u3phy: usb3-phy@ff470000 {
++		compatible = "rockchip,rk3328-u3phy";
++		reg = <0x0 0xff470000 0x0 0x0>;
++		rockchip,u3phygrf = <&usb3phy_grf>;
++		rockchip,grf = <&grf>;
++		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "linestate";
++		clocks = <&cru PCLK_USB3PHY_OTG>, <&cru PCLK_USB3PHY_PIPE>;
++		clock-names = "u3phy-otg", "u3phy-pipe";
++		resets = <&cru SRST_USB3PHY_U2>,
++			 <&cru SRST_USB3PHY_U3>,
++			 <&cru SRST_USB3PHY_PIPE>,
++			 <&cru SRST_USB3OTG_UTMI>,
++			 <&cru SRST_USB3PHY_OTG_P>,
++			 <&cru SRST_USB3PHY_PIPE_P>;
++		reset-names = "u3phy-u2-por", "u3phy-u3-por",
++			      "u3phy-pipe-mac", "u3phy-utmi-mac",
++			      "u3phy-utmi-apb", "u3phy-pipe-apb";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++		status = "disabled";
++
++		u3phy_utmi: utmi@ff470000 {
++			reg = <0x0 0xff470000 0x0 0x8000>;
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++
++		u3phy_pipe: pipe@ff478000 {
++			reg = <0x0 0xff478000 0x0 0x8000>;
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++	};
++
+ 	usb2phy_grf: syscon@ff450000 {
+ 		compatible = "rockchip,rk3328-usb2phy-grf", "syscon",
+ 			     "simple-mfd";
+
+
+--- a/drivers/usb/dwc3/dwc3-of-simple.c
++++ b/drivers/usb/dwc3/dwc3-of-simple.c
+@@ -171,6 +171,7 @@ };
+ 
+ static const struct of_device_id of_dwc3_simple_match[] = {
++	{ .compatible = "rockchip,rk3328-dwc3" },
+ 	{ .compatible = "rockchip,rk3399-dwc3" },
+ 	{ .compatible = "xlnx,zynqmp-dwc3" },
+ 	{ .compatible = "cavium,octeon-7130-usb-uctl" },
+

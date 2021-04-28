@@ -60,6 +60,19 @@ EOT
 # I just add a backport ov v1.11.11 instead
 cp $ROOTDIR/patches/kernel-5.4/001-r8152-v1-11-11.patch target/linux/rockchip/patches-5.4/
 
+# usb3 phy driver
+# cleanup immortalwrt
+rm target/linux/rockchip/patches-5.4/808*
+#rm target/linux/rockchip/files/drivers/phy/rockchip/phy-rockchip-inno-usb3.c
+rm target/linux/rockchip/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb3.yaml
+
+#copy crafted patch
+cp $ROOTDIR/patches/kernel-5.4/add-rk3328-usb3-phy-driver.patch target/linux/rockchip/patches-5.4/808-add-rk3328-usb3-phy-driver.patch
+# enable PHY usb3 for r2s
+sed -i 's/# CONFIG_PHY_ROCKCHIP_INNO_USB3 is not set/CONFIG_PHY_ROCKCHIP_INNO_USB3=y/' target/linux/rockchip/armv8/config-5.4
+
+
+
 # ------------------ packages ------------------------------------
 
 # arm trusted firmware
@@ -86,9 +99,6 @@ sed -i '/CONFIG_WATCHDOG=y/a CONFIG_DW_WATCHDOG=y' target/linux/rockchip/armv8/c
 cp $ROOTDIR/patches/kernel-5.4/995-watchdog-rk3328.patch target/linux/rockchip/patches-5.4/
 cp $ROOTDIR/patches/kernel-5.4/996-watchdog-rk3399.patch target/linux/rockchip/patches-5.4/
 
-# enable PHY usb3 for r2s
-sed -i 's/# CONFIG_PHY_ROCKCHIP_INNO_USB3 is not set/CONFIG_PHY_ROCKCHIP_INNO_USB3=y/' target/linux/rockchip/armv8/config-5.4
-
 # enable crypto
 if ! grep -q "0002-kernel-crypto.addon" target/linux/rockchip/armv8/config-5.4; then
    echo "Adding 0002-kernel-crypto.addon to target/linux/rockchip/armv8/config-5.4"
@@ -99,5 +109,8 @@ else
 fi
    
 #cleanup
-make target/linux/clean
-make package/boot/uboot-rockchip/clean
+if [ -e .config ]; then
+   echo "Cleaning up ..."
+   make target/linux/clean
+   make package/boot/uboot-rockchip/clean
+fi

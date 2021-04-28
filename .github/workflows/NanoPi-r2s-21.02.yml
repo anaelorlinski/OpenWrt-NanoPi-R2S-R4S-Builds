@@ -70,25 +70,25 @@ jobs:
           df -h
       - name: Get OpenWrt source 21.02
         run: |
-          ./steps/01_clone_openwrt_2102.sh
+          /bin/bash ./steps/01_clone_openwrt_2102.sh
       - name: Get ImmortalWrt source 21.02
         run: |
-          ./steps/01_clone_immortal_2102.sh
+          /bin/bash ./steps/01_clone_immortalwrt_2102.sh
       - name: Make working copy of OpenWrt source
         run: |
-          ./steps/02_prepare_openwrt_folder_2102.sh
+          /bin/bash ./steps/02_prepare_openwrt_folder_2102.sh
       - name: Patch OpenWrt source R2S / 21.02
         run: |
-          ./steps/r2s/03_patch_openwrt_2102.sh
+          /bin/bash ./steps/r2s/03_patch_openwrt_2102.sh
       - name: Prepare package
         run: |
-          ./steps/04-prepare_package.sh
+          /bin/bash ./steps/04-prepare_package.sh
       - name: Add ACL
         run: |
-          ./steps/05-create_luci_acl.sh
+          /bin/bash ./steps/05-create_luci_acl.sh
       - name: Load ao Config
         run: |
-          ./steps/06-create_config_from_seed.sh
+          /bin/bash ./steps/06-create_config_from_seed.sh
           
       - name: Download package
         id: package
@@ -124,6 +124,12 @@ jobs:
           cat build/openwrt/.config
           echo '================================================================'
           cd build/openwrt && make -j1 V=s
+      - name: Set env
+        run: |
+          echo "TZ=Europe/Paris" >>$GITHUB_ENV
+          echo "Build_Date=$(date +%Y-%m-%d %H:%M)" >> $GITHUB_ENV
+          echo "RELTAG=v$(date +'%Y%m%d.%H%M')" >> $GITHUB_ENV
+      
       - name: Organize files
         id: organize
         run: |
@@ -135,12 +141,12 @@ jobs:
           gzip -d *.gz && exit 0
           gzip --best *.img
           ls -Ahl
-          sha256sum openwrt*r2s* | tee NanoPI-R2S-AO-$(date +%Y%m%d)-21.02.sha256sum
-          sha256sum openwrt*r4s* | tee NanoPI-R4S-AO-$(date +%Y%m%d)-21.02.sha256sum
-          zip NanoPI-R2S-AO-$(date +%Y%m%d)-21.02-ext4.zip *r2s*ext4*
-          zip NanoPI-R2S-AO-$(date +%Y%m%d)-21.02-sfs.zip *r2s*squashfs*
-          zip NanoPI-R4S-AO-$(date +%Y%m%d)-21.02-ext4.zip *r4s*ext4*
-          zip NanoPI-R4S-AO-$(date +%Y%m%d)-21.02-sfs.zip *r4s*squashfs* 
+          sha256sum openwrt*r2s* | tee NanoPI-R2S-AO-$RELTAG-21.02.sha256sum
+          sha256sum openwrt*r4s* | tee NanoPI-R4S-AO-$RELTAG-21.02.sha256sum
+          zip NanoPI-R2S-AO-$RELTAG-21.02-ext4.zip *r2s*ext4*
+          zip NanoPI-R2S-AO-$RELTAG-21.02-sfs.zip *r2s*squashfs*
+          zip NanoPI-R4S-AO-$RELTAG-21.02-ext4.zip *r4s*ext4*
+          zip NanoPI-R4S-AO-$RELTAG-21.02-sfs.zip *r4s*squashfs* 
           cp ../build/openwrt/*.config ./
           ls -Ahl
       - name: Upload artifact
@@ -149,21 +155,15 @@ jobs:
         with:
           name: OpenWRT_21.02
           path: ./artifact/
-          
-      - name: Set env
-        run: |
-          echo "TZ=Europe/Paris" >>$GITHUB_ENV
-          echo "Build_Date=$(date +%Y-%m-%d %H:%M)" >> $GITHUB_ENV
-          echo "RELTAG=v$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
-        uses: ncipollo/release-action@v1.8.0
+        uses: ncipollo/release-action@v1.8.4
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
-          name: OpenWrt 21.02 ${{ env.Build_Date }} 
+          name: OpenWrt 21.02
           allowUpdates: true
-          tag: ${{ env.RELTAG }}
+          tag: r2s-21.02
           commit: main
           replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
