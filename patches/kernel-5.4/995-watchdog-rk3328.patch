@@ -1,0 +1,30 @@
+The watchdog compatible strings are suppose to be SoC orientated.
+In the more recently added Rockchip rk3328.dtsi file only
+the fallback string "snps,dw-wdt" is used, so add the new
+compatible string:
+
+"rockchip,rk3328-wdt", "snps,dw-wdt"
+
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@xxxxxxxxx>
+---
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index bbdb19a3e..1e3e1086e 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -453,7 +453,7 @@
+ 	};
+ 
+ 	wdt: watchdog@ff1a0000 {
+-		compatible = "snps,dw-wdt";
++		compatible = "rockchip,rk3328-wdt", "snps,dw-wdt";
+ 		reg = <0x0 0xff1a0000 0x0 0x100>;
+ 		interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&cru PCLK_WDT>;
+-- 
+2.11.0
