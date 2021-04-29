@@ -107,7 +107,18 @@ if ! grep -q "0002-kernel-crypto.addon" target/linux/rockchip/armv8/config-5.4; 
 else
    echo "Already added 0002-kernel-crypto.addon to target/linux/rockchip/armv8/config-5.4"
 fi
-   
+
+# add caiaq usb sound module for shairport with old soundcard
+ADDON_PATH='snd-usb-caiaq.makefileaddon'
+ADDON_DEST='package/kernel/linux/modules/usb.mk'
+if ! grep -q " --- $ADDON_PATH" $ADDON_DEST; then
+   echo "Adding $ADDON_PATH to $ADDON_DEST"
+   echo "# --- $ADDON_PATH" >> $ADDON_DEST
+   cat $ROOTDIR/patches/$ADDON_PATH >> $ADDON_DEST
+else
+   echo "Already added $ADDON_PATH to $ADDON_DEST"
+fi
+
 #cleanup
 if [ -e .config ]; then
    echo "Cleaning up ..."
