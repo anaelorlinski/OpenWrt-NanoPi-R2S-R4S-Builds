@@ -10,7 +10,24 @@ cd "$ROOTDIR/build"
 
 # install feeds
 cd openwrt
-./scripts/feeds update -a && ./scripts/feeds install -a
+
+# add stangri repo source from github
+sed -i '/stangri_repo/d' feeds.conf.default
+! grep -q 'stangri_repo' feeds.conf.default && sed -i '5 i\src-git stangri_repo https://github.com/stangri/source.openwrt.melmac.net' feeds.conf.default
+
+./scripts/feeds update -a
+./scripts/feeds install -a -p packages
+./scripts/feeds install -a -p luci
+./scripts/feeds install -a -p routing
+./scripts/feeds install -a -p telephony
+
+# replace vpn routing packages
+./scripts/feeds uninstall vpn-policy-routing
+./scripts/feeds install -p stangri_repo vpn-policy-routing
+
+# this does not work
+#./scripts/feeds uninstall luci-app-vpn-policy-routing
+#./scripts/feeds install -p stangri_repo luci-app-vpn-policy-routing
 
 # Time stamp with $Build_Date=$(date +%Y.%m.%d)
 echo -e '\nAO Build@'$(date "+%Y.%m.%d")'\n'  >> package/base-files/files/etc/banner

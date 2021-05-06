@@ -128,7 +128,8 @@ jobs:
         run: |
           echo "TZ=Europe/Paris" >>$GITHUB_ENV
           echo "Build_Date=$(date +%Y-%m-%d %H:%M)" >> $GITHUB_ENV
-          echo "RELTAG=v$(date +'%Y%m%d.%H%M')" >> $GITHUB_ENV
+          echo "RELTAG=$(date +'%Y%m%d.%H%M')" >> $GITHUB_ENV
+          echo "RELDATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
       
       - name: Organize files
         id: organize
@@ -138,15 +139,17 @@ jobs:
           mv build/openwrt/bin/targets/rockchip/armv8/*sysupgrade.img* ./artifact/
           cd ./artifact/
           ls -Ahl
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs.img.gz
           gzip -d *.gz && exit 0
           gzip --best *.img
           ls -Ahl
-          sha256sum openwrt*r2s* | tee NanoPI-R2S-AO-$RELTAG-21.02.sha256sum
-          sha256sum openwrt*r4s* | tee NanoPI-R4S-AO-$RELTAG-21.02.sha256sum
-          zip NanoPI-R2S-AO-$RELTAG-21.02-ext4.zip *r2s*ext4*
-          zip NanoPI-R2S-AO-$RELTAG-21.02-sfs.zip *r2s*squashfs*
-          zip NanoPI-R4S-AO-$RELTAG-21.02-ext4.zip *r4s*ext4*
-          zip NanoPI-R4S-AO-$RELTAG-21.02-sfs.zip *r4s*squashfs* 
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4.zip *r2s*ext4*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs.zip *r2s*squashfs*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4.zip *r4s*ext4*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs.zip *r4s*squashfs* 
           cp ../build/openwrt/*.config ./
           ls -Ahl
       - name: Upload artifact
@@ -161,11 +164,11 @@ jobs:
         uses: ncipollo/release-action@v1.8.4
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
-          name: OpenWrt 21.02
+          name: OpenWrt 21.02 ${{ env.RELDATE }} 
           allowUpdates: true
-          tag: r2s-21.02
+          tag: r2s-21.02-${{ env.RELDATE }}
           commit: main
           replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
           bodyFile: "release-info-r2s-21.02.md"
-          artifacts: ./artifact/*.zip,./artifact/*.config,./artifact/*.sha256sum
+          artifacts: ./artifact/*.zip

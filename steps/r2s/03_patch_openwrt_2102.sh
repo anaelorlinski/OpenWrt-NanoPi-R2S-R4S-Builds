@@ -94,10 +94,11 @@ cp $BUILDDIR/immortal-fresh-$IMMORTAL_SUFFIX/package/libs/mbedtls/patches/100-Im
    package/libs/mbedtls/patches/
 
 # enable watchdog
-sed -i 's/# CONFIG_WATCHDOG is not set/CONFIG_WATCHDOG=y/' target/linux/rockchip/armv8/config-5.4
-sed -i '/CONFIG_WATCHDOG=y/a CONFIG_DW_WATCHDOG=y' target/linux/rockchip/armv8/config-5.4
-cp $ROOTDIR/patches/kernel-5.4/995-watchdog-rk3328.patch target/linux/rockchip/patches-5.4/
-cp $ROOTDIR/patches/kernel-5.4/996-watchdog-rk3399.patch target/linux/rockchip/patches-5.4/
+#sed -i 's/# CONFIG_WATCHDOG is not set/CONFIG_WATCHDOG=y/' target/linux/rockchip/armv8/config-5.4
+#sed -i '/CONFIG_WATCHDOG=y/a CONFIG_DW_WATCHDOG=y' target/linux/rockchip/armv8/config-5.4
+#cp $ROOTDIR/patches/kernel-5.4/995-watchdog-rk3328.patch target/linux/rockchip/patches-5.4/
+#cp $ROOTDIR/patches/kernel-5.4/996-watchdog-rk3399.patch target/linux/rockchip/patches-5.4/
+#cp $ROOTDIR/patches/kernel-5.4/997-clk-rk3328.patch target/linux/rockchip/patches-5.4/
 
 # enable crypto
 if ! grep -q "0002-kernel-crypto.addon" target/linux/rockchip/armv8/config-5.4; then
