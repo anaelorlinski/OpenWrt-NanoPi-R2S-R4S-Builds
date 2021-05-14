@@ -1,5 +1,5 @@
 ## OpenWrt for Rockchip rk3328/rk3399, include Nanopi R2S/R4S
-#### ⚠ WARNING: USE IT UNDER YOUR OWN RISK. Non profit use only ⚠ 
+#### ⚠ WARNING: NO SUPPORT / USE IT UNDER YOUR OWN RISK  ⚠ 
 [![NanoPi R2S 21.02](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/actions/workflows/NanoPi-r2s-21.02.yml/badge.svg)](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/actions/workflows/NanoPi-r2s-21.02.yml)
 
 ##### Download: [Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases) or [Actions](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/actions) \(Login Needed\)
@@ -16,7 +16,6 @@ Those are my customized builds of OpenWrt for FriendlyARM NanoPi R2S / R4S
 ### Applications
 - A useful set of applications from official OpenWrt package feed
 - vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.net
-
 
 ### Thanks to Original Project:
 - [quintus-lab](https://github.com/quintus-lab/OpenWRT-Rockchip)
