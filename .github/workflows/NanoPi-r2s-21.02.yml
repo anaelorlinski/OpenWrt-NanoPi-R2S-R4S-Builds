@@ -86,9 +86,9 @@ jobs:
       - name: Add ACL
         run: |
           /bin/bash ./steps/05-create_luci_acl.sh
-      - name: Load ao Config
+      - name: Load ao mini Config
         run: |
-          /bin/bash ./steps/06-create_config_from_seed.sh
+          /bin/bash ./steps/06-create_config_from_mini_seed.sh
           
       - name: Download package
         id: package
@@ -111,15 +111,15 @@ jobs:
         run: |
           echo '================================================================'
           cd build/openwrt && make toolchain/install -j1 V=s
-      - name: Compile OpenWRT for R2S & R4S
-        id: compileopenwrt
+      - name: Compile OpenWRT for R2S & R4S mini
+        id: compileopenwrtmini
         continue-on-error: true
         run: |
           cd build/openwrt
           let make_process=$(nproc)+1
           make -j${make_process} V=s || make -j${make_process} V=s
       - name: If compile openwrt Error
-        if: steps.compileopenwrt.outcome == 'failure'
+        if: steps.compileopenwrtmini.outcome == 'failure'
         run: |
           cat build/openwrt/.config
           echo '================================================================'
@@ -131,27 +131,66 @@ jobs:
           echo "RELTAG=$(date +'%Y%m%d.%H%M')" >> $GITHUB_ENV
           echo "RELDATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
       
-      - name: Organize files
-        id: organize
+      - name: Organize files mini
+        id: organizemini
         run: |
           rm -rf ./artifact/
           mkdir -p ./artifact/
           mv build/openwrt/bin/targets/rockchip/armv8/*sysupgrade.img* ./artifact/
           cd ./artifact/
           ls -Ahl
-          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4.img.gz
-          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs.img.gz
-          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4.img.gz
-          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4-mini.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs-mini.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4-mini.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs-mini.img.gz
           gzip -d *.gz && exit 0
           gzip --best *.img
           ls -Ahl
-          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4.zip *r2s*ext4*
-          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs.zip *r2s*squashfs*
-          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4.zip *r4s*ext4*
-          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs.zip *r4s*squashfs* 
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4-mini.zip *r2s*ext4*mini*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs-mini.zip *r2s*squashfs*ini*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4-mini.zip *r4s*ext4*ini*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs-mini.zip *r4s*squashfs* ini*
           cp ../build/openwrt/*.config ./
           ls -Ahl
+      - name: Load ao full Config
+        run: |
+          /bin/bash ./steps/06-create_config_from_seed.sh
+
+      - name: Compile OpenWRT for R2S & R4S full
+        id: compileopenwrtfull
+        continue-on-error: true
+        run: |
+          cd build/openwrt
+          let make_process=$(nproc)+1
+          make -j${make_process} V=s || make -j${make_process} V=s
+      - name: If compile openwrt Error
+        if: steps.compileopenwrtfull.outcome == 'failure'
+        run: |
+          cat build/openwrt/.config
+          echo '================================================================'
+          cd build/openwrt && make -j1 V=s
+      - name: Organize files full
+        id: organizefull
+        run: |
+          rm -rf ./artifact/
+          mkdir -p ./artifact/
+          mv build/openwrt/bin/targets/rockchip/armv8/*sysupgrade.img* ./artifact/
+          cd ./artifact/
+          ls -Ahl
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4-full.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs-full.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-ext4-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4-full.img.gz
+          mv openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs-full.img.gz
+          gzip -d *.gz && exit 0
+          gzip --best *.img
+          ls -Ahl
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-ext4-full.zip *r2s*ext4*full*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r2s-squashfs-full.zip *r2s*squashfs*full*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-ext4-full.zip *r4s*ext4*full*
+          zip OpenWrt-AO-21.02-$RELTAG-NanoPi-r4s-squashfs-full.zip *r4s*squashfs*full*
+          cp ../build/openwrt/*.config ./
+          ls -Ahl
+      
       - name: Upload artifact
         uses: actions/upload-artifact@main
         if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
