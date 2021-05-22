@@ -172,8 +172,6 @@ jobs:
       - name: Organize files full
         id: organizefull
         run: |
-          rm -rf ./artifact/
-          mkdir -p ./artifact/
           mv build/openwrt/bin/targets/rockchip/armv8/*sysupgrade.img* ./artifact/
           cd ./artifact/
           ls -Ahl
