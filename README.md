@@ -19,6 +19,8 @@ Those are my customized builds of OpenWrt for FriendlyARM NanoPi R2S / R4S
 
 ## Changelog
 
+#### 2021-05-25
+- Increase kernel partition size on full build
 #### 2021-05-21
 - Add kernel options related to Docker (full build)
 - There are now 2 builds (mini/full) with different packages and kernel settings
