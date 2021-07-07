@@ -8,12 +8,12 @@ fi
 
 cd "$ROOTDIR/build"
 
+# clone stangri repo
+rm -rf stangri_repo
+git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
+
 # install feeds
 cd openwrt
-
-# add stangri repo source from github
-sed -i '/stangri_repo/d' feeds.conf.default
-! grep -q 'stangri_repo' feeds.conf.default && sed -i '5 i\src-git stangri_repo https://github.com/stangri/source.openwrt.melmac.net' feeds.conf.default
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a -p packages
@@ -21,9 +21,10 @@ sed -i '/stangri_repo/d' feeds.conf.default
 ./scripts/feeds install -a -p routing
 ./scripts/feeds install -a -p telephony
 
+
 # replace vpn routing packages
-./scripts/feeds uninstall vpn-policy-routing
-./scripts/feeds install -p stangri_repo vpn-policy-routing
+rm -rf feeds/packages/net/vpn-policy-routing/
+cp -R ../stangri_repo/vpn-policy-routing feeds/packages/net/
 
 # this does not work
 #./scripts/feeds uninstall luci-app-vpn-policy-routing

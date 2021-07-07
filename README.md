@@ -19,6 +19,9 @@ Those are my customized builds of OpenWrt for FriendlyARM NanoPi R2S / R4S
 
 ## Changelog
 
+#### 2021-07-07
+- Fix issue #3 with strangri_repo : thanks TheLinuxGuy for reporting
+- Fix issue #4 with dnsmasq misconfigured : thanks semicuda for reporting
 #### 2021-05-27
 - Add ddns-scripts and bind-tools
 #### 2021-05-25
