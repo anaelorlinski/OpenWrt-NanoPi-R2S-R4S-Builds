@@ -17,8 +17,8 @@ on:
   #    - 'seed/rockchip.seed'
   #schedule:
   #  - cron: 30 21 * * *
-  watch:
-    types: started
+  #watch:
+  #  types: started
   workflow_dispatch:
 
 jobs:
