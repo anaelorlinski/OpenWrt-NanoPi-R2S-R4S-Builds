@@ -19,6 +19,8 @@ Those are my customized builds of OpenWrt for FriendlyARM NanoPi R2S / R4S
 
 ## Changelog
 
+### 2021-12-23
+- Fix issue #11 so r4s 1Gb boots
 ### 2021-10-11
 - Refresh uboot
 #### 2021-07-07
