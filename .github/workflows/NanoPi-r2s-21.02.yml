@@ -20,7 +20,28 @@ on:
   #watch:
   #  types: started
   workflow_dispatch:
-
+    inputs:
+      openwrt_branch:
+        description: 'OpenWrt Branch to build'     
+        required: true
+        default: '21.02'
+        type: choice
+        options:
+        - '21.02'
+      nanopi_model:
+        description: 'NanoPi Model'     
+        required: true
+        default: 'R4S'
+        type: choice
+        options:
+        - R2S
+        - R4S
+      release_id:
+        description: 'Release Id Suffix : 20220101.suffix'
+        required: true
+        default: '1'
+        type: string
+        
 jobs:
     build:
       runs-on: ubuntu-18.04
