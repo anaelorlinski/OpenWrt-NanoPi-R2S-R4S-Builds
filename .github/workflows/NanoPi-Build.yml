@@ -1,0 +1,262 @@
+#=================================================
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+
+name: NanoPi Build
+
+on:
+#  release:
+#    types: published
+  #push:
+  #  branches:
+  #    - 21.02
+  #  paths:
+  #    - '.github/workflows/openwrt-rockchip-2102.yml'
+  #    - 'step/00-prepare_openwrt.sh'
+  #    - 'step/01-prepare_package.sh'
+  #    - 'seed/rockchip.seed'
+  #schedule:
+  #  - cron: 30 21 * * *
+  #watch:
+  #  types: started
+  workflow_dispatch:
+    inputs:
+      openwrt_branch:
+        description: 'OpenWrt Branch to build'     
+        required: true
+        default: '21.02'
+        type: choice
+        options:
+        - '21.02'
+        
+jobs:
+  init:
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    # Map a step output to a job output
+    outputs:
+      build_string: ${{ steps.gen_build_string.outputs.build_string }}
+      release_tag: ${{ steps.gen_release_tag.outputs.release_tag }}
+    steps:
+    - id: gen_build_string
+      run: echo "::set-output name=build_string::$(date +%Y.%m.%d)"
+    - id: gen_release_tag
+      run: echo "::set-output name=release_tag::$(date +%Y%m%d)"
+  
+  build:
+    needs: init
+    strategy:
+      matrix:
+        nanopi_model: [R2S, R4S]
+    
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@main
+    
+    - name: Free space
+      run: ./workflow-scripts/free_disk_space.sh
+
+    - name: Setup Linux Requirements
+      uses: ./.github/actions/setup-devenv
+
+    - name: Set GITHUB_ENV
+      run: |
+        echo "TZ=Europe/Paris" >>$GITHUB_ENV
+        echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
+        echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
+        echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
+        echo "NANOPI_MODEL=${{ matrix.nanopi_model }}" >> $GITHUB_ENV
+
+    - name: Show GITHUB_ENV
+      run: echo $GITHUB_ENV
+
+    - name: Clone OpenWrt source
+      run: ./openwrt-$OPENWRT_BRANCH/steps/01_clone_openwrt.sh
+    
+    - name: Make working copy of OpenWrt source
+      run: ./openwrt-$OPENWRT_BRANCH/steps/02_prepare_openwrt_folder.sh
+    
+    - name: Patch OpenWrt Source
+      run: ./openwrt-$OPENWRT_BRANCH/steps/03_patch_openwrt.sh
+    
+    - name: Prepare package
+      run: ./openwrt-$OPENWRT_BRANCH/steps/04-prepare_package.sh
+    
+    - name: Add ACL
+      run: ./openwrt-$OPENWRT_BRANCH/steps/05-create_luci_acl.sh
+    
+    - name: Load toolchain seed
+      run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL full
+        
+    - name: Download package
+      id: package
+      run: |
+        cd build/openwrt
+        make download -j10
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Make toolchain-aarch64
+      id: compiletoolchain
+      continue-on-error: true
+      run: |
+        cd build/openwrt
+        let make_process=$(nproc)+1
+        make toolchain/install -j${make_process}
+    
+    - name: If toolchain Error
+      if: steps.compiletoolchain.outcome == 'failure'
+      run: |
+        echo '================================================================'
+        cd build/openwrt && make toolchain/install -j1 V=s
+    
+#    - name: Try cleaning build_dir before packing
+#      run: |
+#        cd build/openwrt
+#        make clean
+#        #ls -l build_dir/
+#        #rm -rf build_dir/host build_dir/toolchain*
+#
+#    - name: Pack toolchain
+#      run: |
+#        pwd
+#        cd ~/work/OpenWrt-NanoPi-R2S-R4S-Builds
+#        pwd
+#        tar --posix -cf ../toolchain_built.tar OpenWrt-NanoPi-R2S-R4S-Builds
+#
+#    - name: Upload artifact
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: toolchain_built
+#        path: ~/work/toolchain_built.tar
+#  
+#  build:
+#    needs: [init, toolchain]
+#    runs-on: ubuntu-20.04
+#    steps:
+    - name: Dump github context
+      run: echo "$GITHUB_CONTEXT"
+      shell: bash
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+#
+#    - name: Retrieve toolchain artifact
+#      uses: actions/download-artifact@v2
+#      with:
+#        name: toolchain_built
+#        path: ~/work/
+#    
+#    - name: Unpack and clean toolchain artifact
+#      run: |
+#        cd ~/work/OpenWrt-NanoPi-R2S-R4S-Builds
+#        tar xf ../toolchain_built.tar
+#        rm ../toolchain_built.tar
+#        pwd
+#        ls -l
+#
+#    - name: list files (debug)
+#      run: ls -l
+#    
+#    - name: fix timestamps
+#      run: |
+#        cd build/openwrt
+#        #find build_dir/{host*,toolchain-*} -name .built\* -exec touch {} \;
+#        touch staging_dir/{host*,toolchain-*}/stamp/.*
+#
+#    - name: Free space
+#      run: |
+#        /bin/bash ./workflow-scripts/free_disk_space.sh
+#        df -h
+#    
+#    - name: Prepare Build deps
+#      uses: ./.github/actions/setup-devenv
+#    
+#    - name: Set env
+#      run: |
+#        #echo "SSH_ACTIONS=false" >> $GITHUB_ENV
+#        #echo "UPLOAD_BIN_DIR=false" >> $GITHUB_ENV
+#        #echo "UPLOAD_FIRMWARE=true" >> $GITHUB_ENV
+#        #echo "UPLOAD_RELEASE=true" >> $GITHUB_ENV
+#        echo "TZ=Europe/Paris" >> $GITHUB_ENV
+#        echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
+#        echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
+#        echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
+#        echo "NANOPI_MODEL=${{ github.event.inputs.nanopi_model }}" >> $GITHUB_ENV
+    
+    - name: Load AO seed (mini)
+      run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL mini
+
+#    - name: Download package
+#      run: |
+#        cd build/openwrt
+#        make defconfig
+#        make download -j10
+#        find dl -size -1024c -exec ls -l {} \;
+#        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile OpenWRT (mini)
+      id: compileopenwrtmini
+      continue-on-error: true
+      run: |
+        cd build/openwrt
+        let make_process=$(nproc)+1
+        make -j${make_process} || make -j${make_process}
+    
+    - name: If compile openwrt Error
+      if: steps.compileopenwrtmini.outcome == 'failure'
+      run: |
+        cat build/openwrt/.config
+        echo '================================================================'
+        cd build/openwrt && make -j1 V=s
+    
+    - name: Organize files (mini)
+      id: organizemini
+      run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL mini $OPENWRT_BRANCH $RELTAG
+    
+    - name: Load AO seed (full)
+      run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL full
+
+#    - name: Download package
+#      run: |
+#        cd build/openwrt
+#        make defconfig
+#        make download -j10
+#        find dl -size -1024c -exec ls -l {} \;
+#        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile OpenWRT (full)
+      id: compileopenwrtfull
+      continue-on-error: true
+      run: |
+        cd build/openwrt
+        let make_process=$(nproc)+1
+        make -j${make_process} || make -j${make_process}
+    
+    - name: If compile openwrt Error
+      if: steps.compileopenwrtfull.outcome == 'failure'
+      run: |
+        cat build/openwrt/.config
+        echo '================================================================'
+        cd build/openwrt && make -j1 V=s
+    
+    - name: Organize files (full)
+      id: organizefull
+      run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL full $OPENWRT_BRANCH $RELTAG
+
+    - name: Create release
+      id: create_release
+      uses: ncipollo/release-action@v1.9.0
+      if: ${{ !cancelled() }}
+      with:
+        name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_STRING }} 
+        allowUpdates: true
+        tag: OpenWrtAO-${{ env.OPENWRT_BRANCH }}-${{ env.RELTAG }}
+        commit: main
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        bodyFile: "openwrt-${{ env.OPENWRT_BRANCH }}/release-info.md"
+        artifacts: ./artifact/*.zip
