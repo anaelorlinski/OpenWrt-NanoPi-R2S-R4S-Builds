@@ -105,7 +105,7 @@ jobs:
       continue-on-error: true
       run: |
         cd build/openwrt
-        let make_process=$(nproc)+2
+        let make_process=$(nproc)+1
         make toolchain/install -j${make_process}
     
     - name: If toolchain Error
@@ -203,7 +203,7 @@ jobs:
       continue-on-error: true
       run: |
         cd build/openwrt
-        let make_process=$(nproc)+2
+        let make_process=$(nproc)+1
         make -j${make_process} || make -j${make_process}
     
     - name: If compile openwrt Error
@@ -250,6 +250,7 @@ jobs:
     - name: Create release
       id: create_release
       uses: ncipollo/release-action@v1.9.0
+      if: ${{ !cancelled() }}
       with:
         name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_DATE }} 
         allowUpdates: true
