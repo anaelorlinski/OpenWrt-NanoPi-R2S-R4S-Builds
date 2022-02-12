@@ -36,15 +36,15 @@ jobs:
 
     # Map a step output to a job output
     outputs:
-      build_date: ${{ steps.gen_build_date.outputs.build_date }}
+      build_string: ${{ steps.gen_build_string.outputs.build_string }}
       release_tag: ${{ steps.gen_release_tag.outputs.release_tag }}
     steps:
-    - id: gen_build_date
-      run: echo "::set-output name=build_date::$(date +%Y.%m.%d)"
+    - id: gen_build_string
+      run: echo "::set-output name=build_string::$(date +%Y.%m.%d)"
     - id: gen_release_tag
       run: echo "::set-output name=release_tag::$(date +%Y%m%d)"
   
-  toolchain:
+  build:
     needs: init
     strategy:
       matrix:
@@ -66,7 +66,7 @@ jobs:
     - name: Set GITHUB_ENV
       run: |
         echo "TZ=Europe/Paris" >>$GITHUB_ENV
-        echo "BUILD_DATE=${{ needs.init.outputs.build_date }}" >> $GITHUB_ENV
+        echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
         echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
         echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
         echo "NANOPI_MODEL=${{ matrix.nanopi_model }}" >> $GITHUB_ENV
@@ -182,7 +182,7 @@ jobs:
 #        #echo "UPLOAD_FIRMWARE=true" >> $GITHUB_ENV
 #        #echo "UPLOAD_RELEASE=true" >> $GITHUB_ENV
 #        echo "TZ=Europe/Paris" >> $GITHUB_ENV
-#        echo "BUILD_DATE=${{ needs.init.outputs.build_date }}" >> $GITHUB_ENV
+#        echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
 #        echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
 #        echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
 #        echo "NANOPI_MODEL=${{ github.event.inputs.nanopi_model }}" >> $GITHUB_ENV
@@ -252,7 +252,7 @@ jobs:
       uses: ncipollo/release-action@v1.9.0
       if: ${{ !cancelled() }}
       with:
-        name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_DATE }} 
+        name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_STRING }} 
         allowUpdates: true
         tag: OpenWrtAO-${{ env.OPENWRT_BRANCH }}-${{ env.RELTAG }}
         commit: main
