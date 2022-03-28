@@ -22,9 +22,9 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 - Full build with LuCI, docker and extra packages
 - vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.net
 
-## OpenWrt branch master (added soon)
+## OpenWrt branch 22.03 (experimental)
 
-### Downloads [Releases master](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=master&expanded=true)
+### Downloads [Releases master](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=m22.03&expanded=true)
 
 ### Configuration
 - OpenWRT master Vanilla / Kernel 5.10
@@ -38,8 +38,9 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
-
-#### 2021-02-12
+#### 2022-03-28
+- Add branch 22.03
+#### 2022-02-12
 - Add losetup, cfdisk in builds. Fix issue #11 : Check docs/resize-f2fs.md how to resize.
 - Branch 21.02 : use gcc 10.2
 - Optimized builds for devices R4S:-mcpu=cortex-a72.cortex-a53+crypto+crc R2S:-mcpu=cortex-a53+crypto+crc

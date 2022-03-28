@@ -1,0 +1,21 @@
+# append to package/kernel/linux/modules/usb.mk
+
+define KernelPackage/sound-usb-caiaq
+  TITLE:=Support for USB audio devices caiaq
+  KCONFIG:= \
+        CONFIG_SND_USB_CAIAQ \
+        CONFIG_SND_USB_CAIAQ_INPUT=n
+  $(call AddDepends/usb)
+  $(call AddDepends/sound)
+  FILES:= \
+        $(LINUX_DIR)/sound/usb/caiaq/snd-usb-caiaq.ko
+  AUTOLOAD:=$(call AutoProbe,snd-usb-caiaq)
+endef
+
+define KernelPackage/sound-usb-caiaq/description
+ Kernel support for USB audio devices caiaq
+endef
+
+$(eval $(call KernelPackage,sound-usb-caiaq))
+
+

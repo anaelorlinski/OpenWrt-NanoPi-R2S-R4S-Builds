@@ -28,6 +28,7 @@ on:
         type: choice
         options:
         - '21.02'
+        - '22.03'
         
 jobs:
   init:
