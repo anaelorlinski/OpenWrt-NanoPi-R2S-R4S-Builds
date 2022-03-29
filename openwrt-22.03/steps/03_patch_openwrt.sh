@@ -79,6 +79,24 @@ else
    echo "Already added $ADDON_PATH to $ADDON_DEST"
 fi
 
+# revert to fresh config
+cp $BUILDDIR/openwrt-fresh-$OPENWRT_SUFFIX/target/linux/generic/config-5.10 target/linux/generic/config-5.10
+# reset and fix missing generic config symbols (TODO check why this is needed)
+echo "# CONFIG_IR_SANYO_DECODER is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_SHARP_DECODER is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_MCE_KBD_DECODER is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_XMP_DECODER is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_IMON_DECODER is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_RCMM_DECODER is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_SPI is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_GPIO_TX is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_PWM_TX is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_SERIAL is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_SIR is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_RC_XBOX_DVD is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_IR_TOY is not set" >> target/linux/generic/config-5.10
+echo "# CONFIG_MEDIA_CEC_RC is not set" >> target/linux/generic/config-5.10
+
 #cleanup
 if [ -e .config ]; then
    echo "Cleaning up ..."

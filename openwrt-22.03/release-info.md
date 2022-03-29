@@ -1,4 +1,9 @@
-## OpenWrt branch 22.03 (experimental)
+## OpenWrt branch 22.03 (experimental WIP)
+
+### Warning
+- Fully experimental build, still WIP.
+- R2S / R4S patches will be reviwed if still needed
+- Goal is to get rid of iptables if possible.
 
 ### Configuration
 - OpenWRT 22.03 Vanilla / Kernel 5.10
@@ -9,5 +14,5 @@
 - A useful set of applications from official OpenWrt package feed
 - Mini build without UI
 - Full build with LuCI, docker and extra packages
-- firewall4 based (nftables) + iptables compatibility packages
+- firewall4 based (nftables) + iptables compatibility packages for now, might change later.
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.netkage
