@@ -20,4 +20,10 @@ if [[ "$1" == "R2S" ]]; then
     sed -i 's/cortex-a72.cortex-a53/cortex-a53/' .config
 fi
 
+if [[ "$1" == "R2C" ]]; then
+    echo "NanoPi R2C model, post patching .config"
+    sed -i 's/nanopi-r4s/nanopi-r2c/' .config
+    sed -i 's/cortex-a72.cortex-a53/cortex-a53/' .config
+fi
+
 make defconfig
