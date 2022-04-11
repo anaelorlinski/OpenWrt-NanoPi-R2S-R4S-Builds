@@ -49,7 +49,7 @@ jobs:
     needs: init
     strategy:
       matrix:
-        nanopi_model: [R2S, R4S]
+        nanopi_model: [R2S, R2C, R4S]
     
     runs-on: ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id

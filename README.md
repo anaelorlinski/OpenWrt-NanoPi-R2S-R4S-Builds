@@ -38,6 +38,8 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-04-12
+- Add NanoPi R2C in uboot and branch 21.02
 #### 2022-03-28
 - Add branch 22.03
 #### 2022-02-12

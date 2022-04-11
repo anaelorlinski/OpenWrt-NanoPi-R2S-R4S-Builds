@@ -45,6 +45,20 @@ endef
 TARGET_DEVICES += friendlyarm_nanopi-r4s
 EOT
 
+cat <<EOT >> target/linux/rockchip/image/armv8.mk
+
+define Device/friendlyarm_nanopi-r2c
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R2C
+  SOC := rk3328
+  UBOOT_DEVICE_NAME := nanopi-r2c-rk3328
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script nanopi-r2s | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-usb-net-rtl8152
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r2c
+EOT
+
+
 # r8152 driver from friendlywrt for kernel 5.4
 # add extra patch to update r8152 driver to v.1.11.11
 # note : driver 2.13 and 2.14 seem unstable from this thread
