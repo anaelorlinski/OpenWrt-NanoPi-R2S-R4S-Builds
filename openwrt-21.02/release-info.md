@@ -10,7 +10,7 @@
 - A useful set of applications from official OpenWrt package feed
 - Mini build without UI
 - Full build with LuCI, docker and extra packages
-- vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.netkage
+- vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
 - Add losetup, cfdisk in builds. Fix issue #11 : Check docs/resize-f2fs.md how to resize.

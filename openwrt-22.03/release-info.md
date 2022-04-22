@@ -15,4 +15,4 @@
 - Mini build without UI
 - Full build with LuCI, docker and extra packages
 - firewall4 based (nftables) + iptables compatibility packages for now, might change later.
-- pbr latest version from https://github.com/stangri/source.openwrt.melmac.netkage
+- pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
