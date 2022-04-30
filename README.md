@@ -38,8 +38,13 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-04-30
+- (21.02) Remove acme/adblock in favor of uacme/adguardhome (mini)
+- (21.02) Add uacme/adguardhome (full)
+#### 2022-04-28
+- (22.03) Add NanoPi R2C support
 #### 2022-04-12
-- Add NanoPi R2C in uboot and branch 21.02
+- (21.02) Add NanoPi R2C support
 #### 2022-03-28
 - Add branch 22.03
 #### 2022-02-12

@@ -13,6 +13,5 @@
 - vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
-- Add losetup, cfdisk in builds. Fix issue #11 : Check docs/resize-f2fs.md how to resize.
-- Branch 21.02 : use gcc 10.2
-- Optimized builds for devices R4S:-mcpu=cortex-a72.cortex-a53+crypto+crc R2S:-mcpu=cortex-a53+crypto+crc
+- Remove acme/adblock in favor of uacme/adguardhome (mini)
+- Add uacme/adguardhome (full)
