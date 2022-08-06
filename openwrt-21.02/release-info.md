@@ -13,5 +13,4 @@
 - vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
-- Remove acme/adblock in favor of uacme/adguardhome (mini)
-- Add uacme/adguardhome (full)
+- Add kmod-tcp-bbr

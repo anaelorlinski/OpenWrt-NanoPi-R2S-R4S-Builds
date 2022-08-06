@@ -38,6 +38,8 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-08-06
+- (21.02) Add kmod-tcp-bbr
 #### 2022-04-30
 - (21.02) Remove acme/adblock in favor of uacme/adguardhome (mini)
 - (21.02) Add uacme/adguardhome (full)
