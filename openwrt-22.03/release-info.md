@@ -16,3 +16,7 @@
 - Full build with LuCI, docker and extra packages
 - firewall4 based (nftables) + iptables compatibility packages for now, might change later.
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
+
+### Changelog
+[2022.08.17] Update 22.03 seeds to match 21.02
+[2022.08.17] Add watchcat

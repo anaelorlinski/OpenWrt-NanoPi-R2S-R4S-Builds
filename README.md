@@ -22,7 +22,7 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 - Full build with LuCI, docker and extra packages
 - vpn-routing-policy latest version from https://github.com/stangri/source.openwrt.melmac.net
 
-## OpenWrt branch 22.03 (WIP experimental)
+## OpenWrt branch 22.03 (WIP)
 
 ### Downloads [Releases 22.03](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=m22.03&expanded=true)
 
@@ -38,6 +38,9 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-08-17
+- (22.03) Align seeds with 21.02
+- (22.03) Add watchcat
 #### 2022-08-06
 - (21.02) Add kmod-tcp-bbr
 #### 2022-04-30
