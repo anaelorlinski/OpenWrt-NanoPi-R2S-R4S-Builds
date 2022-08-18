@@ -38,6 +38,8 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-08-18
+- (22.03) Update scripts to fix pbr missing
 #### 2022-08-17
 - (22.03) Align seeds with 21.02
 - (22.03) Add watchcat

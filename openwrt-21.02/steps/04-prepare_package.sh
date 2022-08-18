@@ -15,13 +15,6 @@ git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
 # install feeds
 cd openwrt
 
-./scripts/feeds update -a
-./scripts/feeds install -a -p packages
-./scripts/feeds install -a -p luci
-./scripts/feeds install -a -p routing
-./scripts/feeds install -a -p telephony
-
-
 # replace vpn routing packages
 rm -rf feeds/packages/net/vpn-policy-routing/
 cp -R ../stangri_repo/vpn-policy-routing feeds/packages/net/
@@ -32,9 +25,7 @@ cp -R ../stangri_repo/luci-app-vpn-policy-routing feeds/luci/applications/
 cp -R ../stangri_repo/pbr feeds/packages/net/
 cp -R ../stangri_repo/luci-app-pbr feeds/luci/applications/
 
-# this does not work
-#./scripts/feeds uninstall luci-app-vpn-policy-routing
-#./scripts/feeds install -p stangri_repo luci-app-vpn-policy-routing
+./scripts/feeds update -a && ./scripts/feeds install -a
 
 # copy patch for nodejs not building
 cp $ROOTDIR/openwrt-21.02/patches/node/010-execvp-arg-list-too-long.patch feeds/packages/lang/node/patches/
