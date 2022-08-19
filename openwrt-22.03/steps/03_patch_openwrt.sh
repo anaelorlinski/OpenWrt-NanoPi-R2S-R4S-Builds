@@ -18,55 +18,25 @@ OPENWRT_BRANCH=22.03
 rm -rf package/boot/uboot-rockchip
 cp -R $ROOTDIR/package/uboot-rockchip package/boot/
 
-# -------------- target rockchip / linux ----------------
-# replace target rockchip with immortalwrt one
+# -------------- target linux/rockchip ----------------
+# replace target rockchip with original one
 rm -rf target/linux/rockchip
-cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/immortalwrt/target/linux/rockchip target/linux/
+cp -R $BUILDDIR/openwrt-fresh-$OPENWRT_SUFFIX/target/linux/rockchip target/linux/
 
-# remove patches that make kernel panic
-#  do not forget to run 03.sh !!!!!!! then make target/linux/clean   
-rm target/linux/rockchip/patches-5.10/805*       # kernel oops, remove !!!
-rm target/linux/rockchip/patches-5.10/9*
-
-#copy crafted patch
-#cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/kernel-5.4/add-rk3328-usb3-phy-driver.patch target/linux/rockchip/patches-5.4/808-add-rk3328-usb3-phy-driver.patch
-# enable PHY usb3 for r2s
-#sed -i 's/# CONFIG_PHY_ROCKCHIP_INNO_USB3 is not set/CONFIG_PHY_ROCKCHIP_INNO_USB3=y/' target/linux/rockchip/armv8/config-5.4
-
-
+# override manually some files in the rockchip target using rsync to merge folders and override same filenames
+rsync -avz $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/target/ target
 
 # ------------------ packages ------------------------------------
 
-# arm trusted firmware
-#rm -rf package/boot/arm-trusted-firmware-rockchip
-#cp -R $BUILDDIR/immortal-fresh/package/boot/arm-trusted-firmware-rockchip package/boot/
-
-# new video module dependancy for rockchip drm
-rm -f package/kernel/linux/modules/video.mk
-cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/immortalwrt/package/kernel/linux/modules/video.mk package/kernel/linux/modules/
-
 # r8168 driver for r4s
-cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/immortalwrt/package/kernel/r8168 package/kernel/
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/r8168 package/kernel/
 
-# copy extra patch from immortalwrt
-cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/immortalwrt/package/libs/mbedtls/patches/100-Implements-AES-and-GCM-with-ARMv8-Crypto-Extensions.patch \
+# enable armv8 crypto for mbedtls
+cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/mbedtls/patches/100-Implements-AES-and-GCM-with-ARMv8-Crypto-Extensions.patch \
    package/libs/mbedtls/patches/
 
-# enable watchdog
-#sed -i 's/# CONFIG_WATCHDOG is not set/CONFIG_WATCHDOG=y/' target/linux/rockchip/armv8/config-5.4
-#sed -i '/CONFIG_WATCHDOG=y/a CONFIG_DW_WATCHDOG=y' target/linux/rockchip/armv8/config-5.4
-#cp $ROOTDIR/patches/kernel-5.4/995-watchdog-rk3328.patch target/linux/rockchip/patches-5.4/
-#cp $ROOTDIR/patches/kernel-5.4/996-watchdog-rk3399.patch target/linux/rockchip/patches-5.4/
-#cp $ROOTDIR/patches/kernel-5.4/997-clk-rk3328.patch target/linux/rockchip/patches-5.4/
-
-# enable crypto
-if ! grep -q "0002-kernel-crypto.addon" target/linux/rockchip/armv8/config-5.10; then
-   echo "Adding 0002-kernel-crypto.addon to target/linux/rockchip/armv8/config-5.10"
-   echo "# --- 0002-kernel-crypto.addon " >> target/linux/rockchip/armv8/config-5.10
-   cat $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/0002-kernel-crypto.addon >> target/linux/rockchip/armv8/config-5.10
-else
-   echo "Already added 0002-kernel-crypto.addon to target/linux/rockchip/armv8/config-5.10"
-fi
+# enable motorcomm for R2C
+echo "CONFIG_MOTORCOMM_PHY=y" >> target/linux/rockchip/armv8/config-5.10
 
 # add caiaq usb sound module for shairport with old soundcard
 ADDON_PATH='snd-usb-caiaq.makefileaddon'
@@ -74,28 +44,13 @@ ADDON_DEST='package/kernel/linux/modules/usb.mk'
 if ! grep -q " --- $ADDON_PATH" $ADDON_DEST; then
    echo "Adding $ADDON_PATH to $ADDON_DEST"
    echo "# --- $ADDON_PATH" >> $ADDON_DEST
-   cat $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/$ADDON_PATH >> $ADDON_DEST
+   cat $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/kernel-5.10/$ADDON_PATH >> $ADDON_DEST
 else
    echo "Already added $ADDON_PATH to $ADDON_DEST"
 fi
 
 # revert to fresh config
 cp $BUILDDIR/openwrt-fresh-$OPENWRT_SUFFIX/target/linux/generic/config-5.10 target/linux/generic/config-5.10
-# reset and fix missing generic config symbols (TODO check why this is needed)
-echo "# CONFIG_IR_SANYO_DECODER is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_SHARP_DECODER is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_MCE_KBD_DECODER is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_XMP_DECODER is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_IMON_DECODER is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_RCMM_DECODER is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_SPI is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_GPIO_TX is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_PWM_TX is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_SERIAL is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_SIR is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_RC_XBOX_DVD is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_IR_TOY is not set" >> target/linux/generic/config-5.10
-echo "# CONFIG_MEDIA_CEC_RC is not set" >> target/linux/generic/config-5.10
 
 #cleanup
 if [ -e .config ]; then

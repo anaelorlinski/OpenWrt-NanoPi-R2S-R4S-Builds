@@ -28,7 +28,7 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 ### Configuration
 - OpenWRT master Vanilla / Kernel 5.10
-- ImmortalWRT patches for Rockchip target NanoPi R2S (rk3328) / NanoPi R4S support (rk3399)
+- Minimal set of ImmortalWRT patches added for Rockchip target NanoPi R2C/R2S (rk3328) / NanoPi R4S support (rk3399)
 
 ### Applications
 - A useful set of applications from official OpenWrt package feed
@@ -38,6 +38,8 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-08-19
+- (22.03) Rework patches to be closer to Vanilla OpenWrt (only tested on R4S 4GB)
 #### 2022-08-18
 - (22.03) Update scripts to fix pbr missing
 #### 2022-08-17
