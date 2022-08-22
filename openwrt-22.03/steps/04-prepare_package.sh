@@ -6,6 +6,8 @@ if [ ! -e "$ROOTDIR/build" ]; then
     exit 1
 fi
 
+OPENWRT_BRANCH=22.03
+
 cd "$ROOTDIR/build"
 
 # clone stangri repo
@@ -14,6 +16,7 @@ git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
 
 # install feeds
 cd openwrt
+./scripts/feeds update -a
 
 # replace vpn routing packages
 rm -rf feeds/packages/net/vpn-policy-routing/
@@ -25,7 +28,13 @@ cp -R ../stangri_repo/luci-app-vpn-policy-routing feeds/luci/applications/
 cp -R ../stangri_repo/pbr feeds/packages/net/
 cp -R ../stangri_repo/luci-app-pbr feeds/luci/applications/
 
-./scripts/feeds update -a && ./scripts/feeds install -a
+# replace acme & haproxy with newer versions taken from master
+rm -rf feeds/packages/net/acme*
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/acme* feeds/packages/net/
+rm -rf feeds/packages/net/haproxy
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/haproxy* feeds/packages/net/
+
+./scripts/feeds update -i && ./scripts/feeds install -a
 
 # Time stamp with $Build_Date=$(date +%Y.%m.%d)
 MANUAL_DATE="$(date +%Y.%m.%d) (manual build)"
