@@ -16,7 +16,7 @@ OPENWRT_BRANCH=21.02
 # replace uboot with local uboot package
 # this version does not need arm-trusted-firmware-rk3328
 rm -rf package/boot/uboot-rockchip
-cp -R $ROOTDIR/package/uboot-rockchip package/boot/
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/uboot-rockchip package/boot/
 
 # -------------- target rockchip / linux ----------------
 # replace target rockchip with immortalwrt one

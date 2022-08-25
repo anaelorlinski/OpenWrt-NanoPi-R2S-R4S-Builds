@@ -38,6 +38,10 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 
 
 ## Changelog
+#### 2022-08-25
+- (22.03) Update U-Boot to 2022.07 (only tested on R4S 4GB)
+- (22.03) Backport Packages from master
+- (22.03) Update r8168 driver
 #### 2022-08-19
 - (22.03) Rework patches to be closer to Vanilla OpenWrt (only tested on R4S 4GB)
 #### 2022-08-18

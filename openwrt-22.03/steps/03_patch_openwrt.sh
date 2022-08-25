@@ -16,7 +16,7 @@ OPENWRT_BRANCH=22.03
 # replace uboot with local uboot package
 # this version does not need arm-trusted-firmware-rk3328
 rm -rf package/boot/uboot-rockchip
-cp -R $ROOTDIR/package/uboot-rockchip package/boot/
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/uboot-rockchip package/boot/
 
 # -------------- target linux/rockchip ----------------
 # replace target rockchip with original one
@@ -57,4 +57,5 @@ if [ -e .config ]; then
    echo "Cleaning up ..."
    make target/linux/clean
    make package/boot/uboot-rockchip/clean
+   make package/kernel/r8168/clean
 fi
