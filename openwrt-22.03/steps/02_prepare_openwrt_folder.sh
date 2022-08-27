@@ -11,6 +11,6 @@ cd "$ROOTDIR/build"
 cp -R openwrt-fresh-2203 openwrt
 
 # install feeds
-cd openwrt
-./scripts/feeds update -a && ./scripts/feeds install -a
+# cd openwrt
+# ./scripts/feeds update -a && ./scripts/feeds install -a
 
