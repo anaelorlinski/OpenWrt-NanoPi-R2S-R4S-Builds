@@ -34,6 +34,10 @@ cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/acme* feeds/packages/net/
 rm -rf feeds/packages/net/haproxy
 cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/haproxy* feeds/packages/net/
 
+# replace adguardhome with prebuilt latest version
+rm -rf feeds/packages/net/adguardhome
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/adguardhome feeds/packages/net/
+
 ./scripts/feeds update -i && ./scripts/feeds install -a
 
 # Time stamp with $Build_Date=$(date +%Y.%m.%d)
