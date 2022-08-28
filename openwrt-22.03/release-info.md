@@ -18,6 +18,10 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
-[2022.08.19] Rework patches
-[2022.08.17] Update 22.03 seeds to match 21.02
-[2022.08.17] Add watchcat
+- [2022-08-30] Add qosify
+- [2022-08-25] Update U-Boot to 2022.07 (only tested on R4S 4GB)
+- [2022-08-25] Backport Packages from master
+- [2022-08-25] Update r8168 driver
+- [2022.08.19] Rework patches
+- [2022.08.17] Update 22.03 seeds to match 21.02
+- [2022.08.17] Add watchcat
