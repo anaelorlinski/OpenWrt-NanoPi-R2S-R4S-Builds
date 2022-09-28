@@ -1,4 +1,4 @@
-## OpenWrt branch 21.02 (stable)
+## OpenWrt branch 21.02 (EOL)
 
 ### Configuration
 - OpenWRT 21.02 Vanilla / Kernel 5.4

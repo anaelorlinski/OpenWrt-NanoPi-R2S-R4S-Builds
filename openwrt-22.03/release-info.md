@@ -1,4 +1,4 @@
-## OpenWrt branch 22.03 (experimental WIP)
+## OpenWrt branch 22.03 (stable)
 
 ### Warning
 - Fully experimental build, still WIP.
@@ -18,6 +18,7 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2022-09-28] Add kmod-sched
 - [2022-09-27] Revert u-boot to 2021.07 to fix R4S 1Gb broken support
 - [2022-09-17] Align patches / Haproxy 2.6.5
 - [2022-08-30] Add qosify
