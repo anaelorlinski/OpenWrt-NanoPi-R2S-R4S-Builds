@@ -10,7 +10,15 @@ cd "$ROOTDIR/build"
 
 cp -R openwrt-fresh-2102 openwrt
 
-# install feeds
+# freeze revision to 21.02.4
 cd openwrt
-./scripts/feeds update -a && ./scripts/feeds install -a
+git reset --hard 66ee6c223193d08e5d8d6a903edbe393ffd945ce
+
+echo "Current OpenWRT commit"
+git log -1
+git describe
+
+# install feeds
+# cd openwrt
+# ./scripts/feeds update -a && ./scripts/feeds install -a
 
