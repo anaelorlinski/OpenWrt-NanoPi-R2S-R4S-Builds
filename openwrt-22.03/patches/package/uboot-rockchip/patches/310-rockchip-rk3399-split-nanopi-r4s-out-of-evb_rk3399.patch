@@ -1,23 +1,25 @@
-From 244492a7a5451eca042d3ec7ccff8de6e23dd288 Mon Sep 17 00:00:00 2001
-From: hmz007 <hmz007@gmail.com>
-Date: Fri, 18 Dec 2020 17:10:35 +0800
-Subject: [PATCH 2/4] rockchip: rk3399: split nanopi-r4s out of evb_rk3399
+From 329da1fe7c952bbda56a9ee18bc42d8a9a7ed97f Mon Sep 17 00:00:00 2001
+From: Jensen Huang <jensenhuang@friendlyarm.com>
+Date: Fri, 26 Aug 2022 14:41:41 +0800
+Subject: [PATCH 2/2] rockchip: rk3399: split nanopi-r4s out of evb_rk3399
 
-Signed-off-by: hmz007 <hmz007@gmail.com>
+And now it's ready for NanoPi R4SE.
+
+Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
 ---
- arch/arm/mach-rockchip/rk3399/Kconfig   |   6 +
- board/friendlyarm/nanopi4/Kconfig       |  15 +++
- board/friendlyarm/nanopi4/MAINTAINERS   |   6 +
- board/friendlyarm/nanopi4/Makefile      |   8 ++
- board/friendlyarm/nanopi4/README        | 122 +++++++++++++++++++
- board/friendlyarm/nanopi4/hwrev.c       | 149 ++++++++++++++++++++++++
- board/friendlyarm/nanopi4/hwrev.h       |  27 +++++
- board/friendlyarm/nanopi4/nanopi4.c     | 148 +++++++++++++++++++++++
- configs/nanopi-r4s-4gb-rk3399_defconfig |   4 +-
- configs/nanopi-r4s-rk3399_defconfig     |   4 +-
- drivers/clk/rockchip/clk_rk3399.c       |   2 +
- include/configs/nanopi4.h               |  24 ++++
- 12 files changed, 511 insertions(+), 4 deletions(-)
+ arch/arm/dts/rk3399-nanopi-r4s-u-boot.dtsi |   2 +
+ arch/arm/mach-rockchip/rk3399/Kconfig      |   6 +
+ board/friendlyarm/nanopi4/Kconfig          |  15 ++
+ board/friendlyarm/nanopi4/MAINTAINERS      |   6 +
+ board/friendlyarm/nanopi4/Makefile         |   8 +
+ board/friendlyarm/nanopi4/README           | 122 ++++++++++++++
+ board/friendlyarm/nanopi4/hwrev.c          | 187 +++++++++++++++++++++
+ board/friendlyarm/nanopi4/hwrev.h          |  27 +++
+ board/friendlyarm/nanopi4/nanopi4.c        | 150 +++++++++++++++++
+ configs/nanopi-r4s-rk3399_defconfig        |   4 +-
+ drivers/clk/rockchip/clk_rk3399.c          |   2 +
+ include/configs/nanopi4.h                  |  24 +++
+ 12 files changed, 551 insertions(+), 2 deletions(-)
  create mode 100644 board/friendlyarm/nanopi4/Kconfig
  create mode 100644 board/friendlyarm/nanopi4/MAINTAINERS
  create mode 100644 board/friendlyarm/nanopi4/Makefile
@@ -27,8 +29,14 @@ Signed-off-by: hmz007 <hmz007@gmail.com>
  create mode 100644 board/friendlyarm/nanopi4/nanopi4.c
  create mode 100644 include/configs/nanopi4.h
 
-diff --git a/arch/arm/mach-rockchip/rk3399/Kconfig b/arch/arm/mach-rockchip/rk3399/Kconfig
-index 17628f9171..2a44aae43c 100644
+--- a/arch/arm/dts/rk3399-nanopi-r4s-u-boot.dtsi
++++ b/arch/arm/dts/rk3399-nanopi-r4s-u-boot.dtsi
+@@ -14,3 +14,5 @@
+ 
+ #include "rk3399-nanopi4-u-boot.dtsi"
+ #include "rk3399-sdram-lpddr4-100.dtsi"
++#include "rk3399-sdram-lpddr3-samsung-4GB-1866.dtsi"
++#include "rk3399-sdram-ddr3-1866.dtsi"
 --- a/arch/arm/mach-rockchip/rk3399/Kconfig
 +++ b/arch/arm/mach-rockchip/rk3399/Kconfig
 @@ -109,6 +109,11 @@ config TARGET_ROC_PC_RK3399
@@ -51,9 +59,6 @@ index 17628f9171..2a44aae43c 100644
  source "board/google/gru/Kconfig"
  source "board/pine64/pinebook-pro-rk3399/Kconfig"
  source "board/pine64/rockpro64_rk3399/Kconfig"
-diff --git a/board/friendlyarm/nanopi4/Kconfig b/board/friendlyarm/nanopi4/Kconfig
-new file mode 100644
-index 0000000000..f3f9dd7b56
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/Kconfig
 @@ -0,0 +1,15 @@
@@ -72,9 +77,6 @@ index 0000000000..f3f9dd7b56
 +	def_bool y
 +
 +endif
-diff --git a/board/friendlyarm/nanopi4/MAINTAINERS b/board/friendlyarm/nanopi4/MAINTAINERS
-new file mode 100644
-index 0000000000..b4c35701d6
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/MAINTAINERS
 @@ -0,0 +1,6 @@
@@ -84,9 +86,6 @@ index 0000000000..b4c35701d6
 +F:      board/friendlyarm/nanopi4/
 +F:      include/configs/nanopi4.h
 +F:      configs/nanopi4_defconfig
-diff --git a/board/friendlyarm/nanopi4/Makefile b/board/friendlyarm/nanopi4/Makefile
-new file mode 100644
-index 0000000000..33a1466567
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/Makefile
 @@ -0,0 +1,8 @@
@@ -98,9 +97,6 @@ index 0000000000..33a1466567
 +#
 +
 +obj-y	+= nanopi4.o hwrev.o
-diff --git a/board/friendlyarm/nanopi4/README b/board/friendlyarm/nanopi4/README
-new file mode 100644
-index 0000000000..c6f58203eb
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/README
 @@ -0,0 +1,122 @@
@@ -226,12 +222,9 @@ index 0000000000..c6f58203eb
 +You should be able to get U-Boot log in console/UART2(baurdrate 1500000)
 +For more detail, please reference to:
 +http://opensource.rock-chips.com/wiki_Boot_option
-diff --git a/board/friendlyarm/nanopi4/hwrev.c b/board/friendlyarm/nanopi4/hwrev.c
-new file mode 100644
-index 0000000000..9199a927ee
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/hwrev.c
-@@ -0,0 +1,149 @@
+@@ -0,0 +1,187 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (c) 2020 FriendlyElec Computer Tech. Co., Ltd.
@@ -335,9 +328,14 @@ index 0000000000..9199a927ee
 + * Group A:
 + *  0x04 - NanoPi NEO4
 + *  0x06 - SOC-RK3399
++ *  0x07 - SOC-RK3399 V2
++ *  0x09 - NanoPi R4S 1GB
++ *  0x0A - NanoPi R4S 4GB
++ *  0x0B - NanoPi R4SE
 + *
 + * Group B:
 + *  0x21 - NanoPi M4 Ver2.0
++ *  0x22 - NanoPi M4B
 + */
 +static int pcb_rev = -1;
 +
@@ -375,15 +373,45 @@ index 0000000000..9199a927ee
 +	}
 +}
 +
++#ifdef CONFIG_SPL_BUILD
++static struct board_ddrtype {
++	int rev;
++	const char *type;
++} ddrtypes[] = {
++	{ 0x00, "lpddr3-samsung-4GB-1866" },
++	{ 0x01, "lpddr3-samsung-4GB-1866" },
++	{ 0x04,   "ddr3-1866" },
++	{ 0x06,   "ddr3-1866" },
++	{ 0x07, "lpddr4-100"  },
++	{ 0x09,   "ddr3-1866" },
++	{ 0x0a, "lpddr4-100"  },
++	{ 0x0b, "lpddr4-100"  },
++	{ 0x21, "lpddr4-100"  },
++	{ 0x22,   "ddr3-1866" },
++};
++
++const char *rk3399_get_ddrtype(void) {
++	int i;
++
++	bd_hwrev_init();
++	printf("Board: rev%02x\n", pcb_rev);
++
++	for (i = 0; i < ARRAY_SIZE(ddrtypes); i++) {
++		if (ddrtypes[i].rev == pcb_rev)
++			return ddrtypes[i].type;
++	}
++
++	/* fallback to first subnode (ie, first included dtsi) */
++	return NULL;
++}
++#endif
++
 +/* To override __weak symbols */
 +u32 get_board_rev(void)
 +{
 +	return pcb_rev;
 +}
 +
-diff --git a/board/friendlyarm/nanopi4/hwrev.h b/board/friendlyarm/nanopi4/hwrev.h
-new file mode 100644
-index 0000000000..23b3c7a557
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/hwrev.h
 @@ -0,0 +1,27 @@
@@ -414,12 +442,9 @@ index 0000000000..23b3c7a557
 +extern u32 get_board_rev(void);
 +
 +#endif /* __BD_HW_REV_H__ */
-diff --git a/board/friendlyarm/nanopi4/nanopi4.c b/board/friendlyarm/nanopi4/nanopi4.c
-new file mode 100644
-index 0000000000..a140370ca2
 --- /dev/null
 +++ b/board/friendlyarm/nanopi4/nanopi4.c
-@@ -0,0 +1,148 @@
+@@ -0,0 +1,150 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (c) 2020 FriendlyElec Computer Tech. Co., Ltd.
@@ -444,6 +469,8 @@ index 0000000000..a140370ca2
 +#include <asm/io.h>
 +#include <asm/setup.h>
 +#include <u-boot/sha256.h>
++
++#include "hwrev.h"
 +
 +#ifdef CONFIG_MISC_INIT_R
 +static void setup_iodomain(void)
@@ -568,21 +595,17 @@ index 0000000000..a140370ca2
 +	serialnr->low = (u32)(serial & 0xffffffff);
 +}
 +#endif
-diff --git a/configs/nanopi-r4s-rk3399_defconfig b/configs/nanopi-r4s-rk3399_defconfig
-index 034241f209..b67f7c0dc9 100644
 --- a/configs/nanopi-r4s-rk3399_defconfig
 +++ b/configs/nanopi-r4s-rk3399_defconfig
-@@ -4,13 +4,13 @@ CONFIG_SYS_TEXT_BASE=0x00200000
- CONFIG_NR_DRAM_BANKS=1
+@@ -6,13 +6,13 @@ CONFIG_NR_DRAM_BANKS=1
  CONFIG_ENV_OFFSET=0x3F8000
--CONFIG_DEFAULT_DEVICE_TREE="rk3399-nanopi-r4s"
+ CONFIG_DEFAULT_DEVICE_TREE="rk3399-nanopi-r4s"
  CONFIG_ROCKCHIP_RK3399=y
 -CONFIG_TARGET_EVB_RK3399=y
 +CONFIG_TARGET_NANOPI4=y
  CONFIG_DEBUG_UART_BASE=0xFF1A0000
  CONFIG_DEBUG_UART_CLOCK=24000000
  CONFIG_SYS_LOAD_ADDR=0x800800
-+CONFIG_DEFAULT_DEVICE_TREE="rk3399-nanopi-r4s"
  CONFIG_DEBUG_UART=y
  CONFIG_DEFAULT_FDT_FILE="rockchip/rk3399-nanopi-r4s.dtb"
 -CONFIG_DISPLAY_BOARDINFO_LATE=y
@@ -590,22 +613,17 @@ index 034241f209..b67f7c0dc9 100644
  # CONFIG_SPL_RAW_IMAGE_SUPPORT is not set
  CONFIG_SPL_STACK_R=y
  CONFIG_SPL_STACK_R_MALLOC_SIMPLE_LEN=0x10000
-diff --git a/drivers/clk/rockchip/clk_rk3399.c b/drivers/clk/rockchip/clk_rk3399.c
-index 22c373a623..38975c0c65 100644
 --- a/drivers/clk/rockchip/clk_rk3399.c
 +++ b/drivers/clk/rockchip/clk_rk3399.c
-@@ -1351,6 +1351,8 @@ static void rkclk_init(struct rockchip_cru *cru)
+@@ -1372,6 +1372,8 @@ static void rkclk_init(struct rockchip_c
  		     pclk_div << PCLK_PERILP1_DIV_CON_SHIFT |
  		     hclk_div << HCLK_PERILP1_DIV_CON_SHIFT |
  		     HCLK_PERILP1_PLL_SEL_GPLL << HCLK_PERILP1_PLL_SEL_SHIFT);
 +
 +	rk3399_saradc_set_clk(cru, 1000000);
  }
- #endif
  
-diff --git a/include/configs/nanopi4.h b/include/configs/nanopi4.h
-new file mode 100644
-index 0000000000..a86d38976a
+ static int rk3399_clk_probe(struct udevice *dev)
 --- /dev/null
 +++ b/include/configs/nanopi4.h
 @@ -0,0 +1,24 @@
@@ -633,6 +651,3 @@ index 0000000000..a86d38976a
 +#define CONFIG_REVISION_TAG
 +
 +#endif
--- 
-2.25.1
-
