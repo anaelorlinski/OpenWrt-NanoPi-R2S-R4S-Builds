@@ -29,6 +29,7 @@ on:
         options:
         - '21.02'
         - '22.03'
+        - 'master'
       model_R4S:
         description: 'Build R4S'
         type: boolean
@@ -40,7 +41,7 @@ on:
       model_R2C:
         description: 'Build R2C'
         type: boolean
-        default: true
+        default: false
 jobs:
   init:
     runs-on: ubuntu-22.04
@@ -53,18 +54,18 @@ jobs:
       matrix: ${{ steps.build_matrix.outputs.matrix }}
     steps:
     - id: gen_build_string
-      run: echo "::set-output name=build_string::$(date +%Y.%m.%d)"
+      run: echo "build_string=$(date +%Y.%m.%d)" >> $GITHUB_OUTPUT
     - id: gen_release_tag
-      run: echo "::set-output name=release_tag::$(date +%Y%m%d)"
+      run: echo "release_tag=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
     - id: build_matrix
       run: |
           model_R4S="${{ fromJSON('["", "R4S"]')[github.event.inputs.model_R4S == 'true'] }}"
           model_R2S="${{ fromJSON('["", "R2S"]')[github.event.inputs.model_R2S == 'true'] }}"
-          model_R2C="${{ fromJSON('["", "R2C"]')[github.event.inputs.model_R2C == 'true'] }}"
+          model_R2C="${{ fromJSON('["", "R2C"]')[github.event.inputs.model_R2C == 'true' && (github.event.inputs.openwrt_branch == '21.02' || github.event.inputs.openwrt_branch == '22.03')] }}"
           models="$model_R4S $model_R2S $model_R2C"
           modelsJson=$(echo -n "$models" | jq -R -s -c 'split(" ") | map(select(length>0))')
           matrix="{\"nanopi_model\":$modelsJson}"
-          echo "::set-output name=matrix::$matrix"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
   
   build:
     needs: init
@@ -270,7 +271,7 @@ jobs:
 
     - name: Create release
       id: create_release
-      uses: ncipollo/release-action@v1.9.0
+      uses: ncipollo/release-action@v1.11.1
       if: ${{ !cancelled() }}
       with:
         name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_STRING }} 
@@ -280,4 +281,4 @@ jobs:
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         bodyFile: "openwrt-${{ env.OPENWRT_BRANCH }}/release-info.md"
-        artifacts: ./artifact/*.zip
+        artifacts: ./artifact/*.gz
