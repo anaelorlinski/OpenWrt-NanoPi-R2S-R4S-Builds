@@ -10,9 +10,9 @@ cd "$ROOTDIR/build"
 
 cp -R openwrt-fresh-2102 openwrt
 
-# freeze revision to 21.02.4
+# freeze revision to 21.02.5
 cd openwrt
-git reset --hard 66ee6c223193d08e5d8d6a903edbe393ffd945ce
+git reset --hard ea34ce11c17c6df046effd65a674f79034b124ab
 
 echo "Current OpenWRT commit"
 git log -1
