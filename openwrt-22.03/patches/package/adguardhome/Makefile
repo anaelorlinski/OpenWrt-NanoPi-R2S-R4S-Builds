@@ -6,13 +6,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=adguardhome
-PKG_VERSION:=0.107.16
+PKG_VERSION:=0.107.21
 PKG_RELEASE:=1
 
 # WARNING : need rework for other arch
 PKG_SOURCE:=AdGuardHome_linux_arm64.tar.gz
 PKG_SOURCE_URL:=https://github.com/AdguardTeam/AdGuardHome/releases/download/v$(PKG_VERSION)/
-PKG_HASH:=ddca30322d3cd53231eb9760cc13fe624223e08070c8ad5877f827db32fd90e2
+PKG_HASH:=6a386fbf1630b6d11a0905cbe16683723ce4f20d24ae121726fe551c411d7ea8
 
 PKG_LICENSE:=GPL-3.0-only
 PKG_LICENSE_FILES:=LICENSE.txt

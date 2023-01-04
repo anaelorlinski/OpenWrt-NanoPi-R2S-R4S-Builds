@@ -9,7 +9,6 @@ fi
 BUILDDIR="$ROOTDIR/build"
 
 cd "$BUILDDIR/openwrt"
-OPENWRT_SUFFIX=2203
 OPENWRT_BRANCH=22.03
 
 # -------------- UBOOT -----------------------------------
@@ -21,7 +20,7 @@ cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/uboot-rockchip package/bo
 # -------------- target linux/rockchip ----------------
 # replace target rockchip with original one
 rm -rf target/linux/rockchip
-cp -R $BUILDDIR/openwrt-fresh-$OPENWRT_SUFFIX/target/linux/rockchip target/linux/
+cp -R $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/rockchip target/linux/
 
 # override manually some files in the rockchip target using rsync to merge folders and override same filenames
 rsync -avz $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/target/ target
@@ -50,7 +49,7 @@ else
 fi
 
 # revert to fresh config
-cp $BUILDDIR/openwrt-fresh-$OPENWRT_SUFFIX/target/linux/generic/config-5.10 target/linux/generic/config-5.10
+cp $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/generic/config-5.10 target/linux/generic/config-5.10
 
 #cleanup
 if [ -e .config ]; then

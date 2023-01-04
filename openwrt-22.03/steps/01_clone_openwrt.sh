@@ -10,7 +10,7 @@ cd $ROOTDIR
 mkdir build
 cd build
 
-OPENWRT_FOLDER=openwrt-fresh-2203
+OPENWRT_FOLDER=openwrt-fresh-22.03
 git clone -b openwrt-22.03 --single-branch https://git.openwrt.org/openwrt/openwrt.git $OPENWRT_FOLDER
 cd $OPENWRT_FOLDER
 echo "Current OpenWRT commit"

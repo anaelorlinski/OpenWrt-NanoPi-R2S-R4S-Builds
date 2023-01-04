@@ -6,11 +6,17 @@ Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
 If you like this project you can gift me a coffee !
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate/?business=8XQTGXAHEAKPY&no_recurring=0&currency_code=EUR)
 
-## OpenWrt branch 22.03 (stable)
+## OpenWrt 22.03.3 (stable)
 
 [Download 22.03 Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-22.03&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-22.03/release-info.md)
+Supported Models : R2S / R4S(1Gb & 4Gb) / R2C (Untested)
 
-## OpenWrt branch 21.02 (EOL)
+## OpenWrt branch master (experimental)
+
+[Download master Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-master&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-master/release-info.md)
+Supported Models : R2S / R4S(1Gb & 4Gb)
+
+## OpenWrt 21.02.5 (EOL)
 
 [Download 21.02 Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-21.02&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-21.02/release-info.md)
 

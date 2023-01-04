@@ -8,7 +8,15 @@ fi
 
 cd "$ROOTDIR/build"
 
-cp -R openwrt-fresh-2203 openwrt
+cp -R openwrt-fresh-22.03 openwrt
+
+# freeze revision to 22.03.3
+cd openwrt
+git reset --hard 221fbfa2d854ccb6cd003c065ec308fbc0651b11
+
+echo "Current OpenWRT commit"
+git log -1
+git describe
 
 # install feeds
 # cd openwrt
