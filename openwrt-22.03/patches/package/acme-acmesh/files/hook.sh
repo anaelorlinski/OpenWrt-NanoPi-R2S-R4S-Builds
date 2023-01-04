@@ -2,8 +2,9 @@
 set -u
 ACME=/usr/lib/acme/client/acme.sh
 LOG_TAG=acme-acmesh
-# webroot option deprecated, use the hardcoded value directly in the next major version
-WEBROOT=${webroot:-/var/run/acme/challenge}
+# webroot option deprecated, use the exported value directly in the next major version
+WEBROOT=${webroot:-$CHALLENGE_DIR}
+NOTIFY=/usr/lib/acme/notify
 
 # shellcheck source=net/acme/files/functions.sh
 . /usr/lib/acme/functions.sh
@@ -12,9 +13,33 @@ WEBROOT=${webroot:-/var/run/acme/challenge}
 export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 export NO_TIMESTAMP=1
 
-cmd="$1"
+link_certs()
+{
+    local main_domain
+    local domain_dir
+    domain_dir="$1"
+    main_domain="$2"
 
-case $cmd in
+    (umask 077; cat "$domain_dir/fullchain.cer" "$domain_dir/$main_domain.key" > "$domain_dir/combined.cer")
+
+    if [ ! -e "$CERT_DIR/$main_domain.crt" ]; then
+		ln -s "$domain_dir/$main_domain.cer" "$CERT_DIR/$main_domain.crt"
+    fi
+    if [ ! -e "$CERT_DIR/$main_domain.key" ]; then
+		ln -s "$domain_dir/$main_domain.key" "$CERT_DIR/$main_domain.key"
+    fi
+    if [ ! -e "$CERT_DIR/$main_domain.fullchain.crt" ]; then
+		ln -s "$domain_dir/fullchain.cer" "$CERT_DIR/$main_domain.fullchain.crt"
+    fi
+    if [ ! -e "$CERT_DIR/$main_domain.combined.crt" ]; then
+		ln -s "$domain_dir/combined.cer" "$CERT_DIR/$main_domain.combined.crt"
+    fi
+    if [ ! -e "$CERT_DIR/$main_domain.chain.crt" ]; then
+		ln -s "$domain_dir/ca.cer" "$CERT_DIR/$main_domain.chain.crt"
+    fi
+}
+
+case $1 in
 get)
 	set --
 	[ "$debug" = 1 ] && set -- "$@" --debug
@@ -38,20 +63,27 @@ get)
 			staging_moved=1
 		else
 			set -- "$@" --renew --home "$state_dir" -d "$main_domain"
-			log info "$*"
-			trap 'ACTION=renewed-failed hotplug-call acme;exit 1' INT
-			"$ACME" "$@"
+			log info "$ACME $*"
+			trap '$NOTIFY renew-failed;exit 1' INT
+			$ACME "$@"
 			status=$?
 			trap - INT
 
 			case $status in
-			0) ;; # renewed ok, handled by acme.sh hook, ignore.
-			2) ;; # renew skipped, ignore.
+			0)
+                                link_certs "$domain_dir" "$main_domain"
+				$NOTIFY renewed
+				exit
+				;;
+			2)
+				# renew skipped, ignore.
+				exit
+				;;
 			*)
-				ACTION=renew-failed hotplug-call acme
+				$NOTIFY renew-failed
+				exit 1
 				;;
 			esac
-			return 0
 		fi
 	fi
 
@@ -83,6 +115,9 @@ get)
 		elif [ "$calias" ]; then
 			set -- "$@" --challenge-alias "$calias"
 		fi
+		if [ "$dns_wait" ]; then
+			set -- "$@" --dnssleep "$dns_wait"
+		fi
 	elif [ "$standalone" = 1 ]; then
 		set -- "$@" --standalone --listen-v6
 	else
@@ -92,21 +127,18 @@ get)
 
 	set -- "$@" --issue --home "$state_dir"
 
-	log info "$*"
-	trap 'ACTION=issue-failed hotplug-call acme;exit 1' INT
+	log info "$ACME $*"
+	trap '$NOTIFY issue-failed;exit 1' INT
 	"$ACME" "$@" \
-		--pre-hook 'ACTION=prepare hotplug-call acme' \
-		--renew-hook 'ACTION=renewed hotplug-call acme'
+		--pre-hook "$NOTIFY prepare" \
+		--renew-hook "$NOTIFY renewed"
 	status=$?
 	trap - INT
 
 	case $status in
 	0)
-		ln -s "$domain_dir/$main_domain.cer" /etc/ssl/acme
-		ln -s "$domain_dir/$main_domain.key" /etc/ssl/acme
-		ln -s "$domain_dir/fullchain.cer" "/etc/ssl/acme/$main_domain.fullchain.cer"
-		ln -s "$domain_dir/ca.cer" "/etc/ssl/acme/$main_domain.chain.cer"
-		ACTION=issued hotplug-call acme
+                link_certs "$domain_dir" "$main_domain"
+		$NOTIFY issued
 		;;
 	*)
 		if [ "$staging_moved" = 1 ]; then
@@ -117,8 +149,7 @@ get)
 			mv "$domain_dir" "$failed_dir"
 			log err "State moved to $failed_dir"
 		fi
-		ACTION=issue-failed hotplug-call acme
-		return 0
+		$NOTIFY issue-failed
 		;;
 	esac
 	;;

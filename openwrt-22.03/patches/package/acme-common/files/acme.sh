@@ -8,10 +8,9 @@
 #
 # Authors: Toke Høiland-Jørgensen <toke@toke.dk>
 
-export state_dir='/etc/acme'
-export account_email=
-export debug=0
-export challenge_dir='/var/run/acme/challenge'
+run_dir=/var/run/acme
+export CHALLENGE_DIR=$run_dir/challenge
+export CERT_DIR=/etc/ssl/acme
 NFT_HANDLE=
 HOOK=/usr/lib/acme/hook
 LOG_TAG=acme
@@ -23,6 +22,9 @@ LOG_TAG=acme
 
 cleanup() {
 	log debug "cleaning up"
+	if [ -e $run_dir/lock ]; then
+		rm $run_dir/lock
+	fi
 	if [ "$NFT_HANDLE" ]; then
 		# $NFT_HANDLE contains the string 'handle XX' so pass it unquoted to nft
 		nft delete rule inet fw4 input $NFT_HANDLE
@@ -33,7 +35,7 @@ load_options() {
 	section=$1
 
 	# compatibility for old option name
-	config_get_bool use_staging "$section" staging
+	config_get_bool staging "$section" use_staging
 	if [ -z "$staging" ]; then
 		config_get_bool staging "$section" staging 0
 	fi
@@ -56,11 +58,13 @@ load_options() {
 	export days
 	config_get standalone "$section" standalone 0
 	export standalone
+	config_get dns_wait "$section" dns_wait
+	export dns_wait
 
 	config_get webroot "$section" webroot
 	export webroot
 	if [ "$webroot" ]; then
-		log warn "Option \"webroot\" is deprecated, please remove it and change your web server's config so it serves ACME challenge requests from /var/run/acme/challenge."
+		log warn "Option \"webroot\" is deprecated, please remove it and change your web server's config so it serves ACME challenge requests from $CHALLENGE_DIR."
 	fi
 }
 
@@ -76,7 +80,7 @@ get_cert() {
 
 	load_options "$section"
 	if [ -z "$dns" ] && [ "$standalone" = 0 ]; then
-		mkdir -p "$challenge_dir"
+		mkdir -p "$CHALLENGE_DIR"
 	fi
 
 	if [ "$standalone" = 1 ] && [ -z "$NFT_HANDLE" ]; then
@@ -102,11 +106,19 @@ load_globals() {
 		log err "account_email option is required"
 		exit 1
 	fi
+	export account_email
 
-	config_get state_dir "$section" state_dir "$state_dir"
-	mkdir -p "$state_dir"
+	config_get state_dir "$section" state_dir
+	if [ "$state_dir" ]; then
+		log warn "Option \"state_dir\" is deprecated, please remove it. Certificates now exist in $CERT_DIR."
+		mkdir -p "$state_dir"
+	else
+		state_dir=/etc/acme
+	fi
+	export state_dir
 
-	config_get debug "$section" debug "$debug"
+	config_get debug "$section" debug 0
+	export debug
 
 	# only look for the first acme section
 	return 1
@@ -117,7 +129,6 @@ usage() {
 Usage: acme <command> [arguments]
 Commands:
 	get                issue or renew certificates
-	cert <domain>      show certificate matching domain
 EOF
 	exit 1
 }
@@ -129,11 +140,18 @@ fi
 
 case $1 in
 get)
+	mkdir -p $run_dir
+	exec 200>$run_dir/lock
+	if ! flock -n 200; then
+		log err "Another ACME instance is already running."
+		exit 1
+	fi
+
+	trap cleanup EXIT
+
 	config_load acme
 	config_foreach load_globals acme
 
-	mkdir -p /etc/ssl/acme
-	trap cleanup EXIT
 	config_foreach get_cert cert
 	;;
 *)
