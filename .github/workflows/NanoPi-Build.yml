@@ -42,6 +42,14 @@ on:
         description: 'Build R2C'
         type: boolean
         default: false
+      build_mini:
+        description: 'Build mini seed'
+        type: boolean
+        default: false
+      build_full:
+        description: 'Build full seed'
+        type: boolean
+        default: true
 jobs:
   init:
     runs-on: ubuntu-22.04
@@ -92,6 +100,8 @@ jobs:
         echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
         echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
         echo "NANOPI_MODEL=${{ matrix.nanopi_model }}" >> $GITHUB_ENV
+        echo "BUILD_MINI=${{ github.event.inputs.build_mini }}" >> $GITHUB_ENV
+        echo "BUILD_FULL=${{ github.event.inputs.build_full }}" >> $GITHUB_ENV
 
     - name: Show GITHUB_ENV
       run: echo $GITHUB_ENV
@@ -136,92 +146,23 @@ jobs:
         echo '================================================================'
         cd build/openwrt && make toolchain/install -j1 V=s
     
-#    - name: Try cleaning build_dir before packing
-#      run: |
-#        cd build/openwrt
-#        make clean
-#        #ls -l build_dir/
-#        #rm -rf build_dir/host build_dir/toolchain*
-#
-#    - name: Pack toolchain
-#      run: |
-#        pwd
-#        cd ~/work/OpenWrt-NanoPi-R2S-R4S-Builds
-#        pwd
-#        tar --posix -cf ../toolchain_built.tar OpenWrt-NanoPi-R2S-R4S-Builds
-#
-#    - name: Upload artifact
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: toolchain_built
-#        path: ~/work/toolchain_built.tar
-#  
-#  build:
-#    needs: [init, toolchain]
-#    runs-on: ubuntu-20.04
-#    steps:
     - name: Dump github context
       run: echo "$GITHUB_CONTEXT"
       shell: bash
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
-#
-#    - name: Retrieve toolchain artifact
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: toolchain_built
-#        path: ~/work/
-#    
-#    - name: Unpack and clean toolchain artifact
-#      run: |
-#        cd ~/work/OpenWrt-NanoPi-R2S-R4S-Builds
-#        tar xf ../toolchain_built.tar
-#        rm ../toolchain_built.tar
-#        pwd
-#        ls -l
-#
-#    - name: list files (debug)
-#      run: ls -l
-#    
-#    - name: fix timestamps
-#      run: |
-#        cd build/openwrt
-#        #find build_dir/{host*,toolchain-*} -name .built\* -exec touch {} \;
-#        touch staging_dir/{host*,toolchain-*}/stamp/.*
-#
-#    - name: Free space
-#      run: |
-#        /bin/bash ./workflow-scripts/free_disk_space.sh
-#        df -h
-#    
-#    - name: Prepare Build deps
-#      uses: ./.github/actions/setup-devenv
-#    
-#    - name: Set env
-#      run: |
-#        #echo "SSH_ACTIONS=false" >> $GITHUB_ENV
-#        #echo "UPLOAD_BIN_DIR=false" >> $GITHUB_ENV
-#        #echo "UPLOAD_FIRMWARE=true" >> $GITHUB_ENV
-#        #echo "UPLOAD_RELEASE=true" >> $GITHUB_ENV
-#        echo "TZ=Europe/Paris" >> $GITHUB_ENV
-#        echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
-#        echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
-#        echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
-#        echo "NANOPI_MODEL=${{ github.event.inputs.nanopi_model }}" >> $GITHUB_ENV
     
     - name: Load AO seed (mini)
+      if: github.event.inputs.build_mini == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL mini
 
-#    - name: Download package
-#      run: |
-#        cd build/openwrt
-#        make defconfig
-#        make download -j10
-#        find dl -size -1024c -exec ls -l {} \;
-#        find dl -size -1024c -exec rm -f {} \;
+    - name: Build kmods (mini)
+      if: github.event.inputs.build_mini == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/07-all_kmods.sh
 
     - name: Compile OpenWRT (mini)
       id: compileopenwrtmini
+      if: github.event.inputs.build_mini == 'true'
       continue-on-error: true
       run: |
         cd build/openwrt
@@ -229,7 +170,7 @@ jobs:
         make -j${make_process} || make -j${make_process}
     
     - name: If compile openwrt Error
-      if: steps.compileopenwrtmini.outcome == 'failure'
+      if: github.event.inputs.build_mini == 'true' && steps.compileopenwrtmini.outcome == 'failure'
       run: |
         cat build/openwrt/.config
         echo '================================================================'
@@ -237,21 +178,20 @@ jobs:
     
     - name: Organize files (mini)
       id: organizemini
+      if: github.event.inputs.build_mini == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL mini $OPENWRT_BRANCH $RELTAG
     
     - name: Load AO seed (full)
+      if: github.event.inputs.build_full == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL full
 
-#    - name: Download package
-#      run: |
-#        cd build/openwrt
-#        make defconfig
-#        make download -j10
-#        find dl -size -1024c -exec ls -l {} \;
-#        find dl -size -1024c -exec rm -f {} \;
+    - name: Build kmods (full)
+      if: github.event.inputs.build_full == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/07-all_kmods.sh
 
     - name: Compile OpenWRT (full)
       id: compileopenwrtfull
+      if: github.event.inputs.build_full == 'true'
       continue-on-error: true
       run: |
         cd build/openwrt
@@ -259,7 +199,7 @@ jobs:
         make -j${make_process} || make -j${make_process}
     
     - name: If compile openwrt Error
-      if: steps.compileopenwrtfull.outcome == 'failure'
+      if: github.event.inputs.build_full == 'true' && steps.compileopenwrtfull.outcome == 'failure'
       run: |
         cat build/openwrt/.config
         echo '================================================================'
@@ -267,6 +207,7 @@ jobs:
     
     - name: Organize files (full)
       id: organizefull
+      if: github.event.inputs.build_full == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL full $OPENWRT_BRANCH $RELTAG
 
     - name: Create release

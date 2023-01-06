@@ -16,6 +16,7 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2023-01-07] Bundle kmods
 - [2023-01-04] Freeze to OpenWrt 22.03.3 release instead of branch
 - [2022-10-19] Re-Update U-Boot to 2022.07 and use FriendlyWrt patches
 - [2022-09-28] Add kmod-sched
