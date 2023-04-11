@@ -19,6 +19,9 @@ rm -rf bin/
 rm -rf files/ipks/
 let make_process=$(nproc)+1
 
+# compile toolchain if not built yet
+make toolchain/install -j${make_process} || { make toolchain/install -j 1 V=s ; exit 1 ; }
+
 # compile kernel kmods and build packages
 make target/compile -j ${make_process} || { make target/compile -j 1 V=s ; exit 1 ; }
 make package/linux/compile -j ${make_process} || { make package/linux/compile -j 1 V=s ; exit 1 ; }
