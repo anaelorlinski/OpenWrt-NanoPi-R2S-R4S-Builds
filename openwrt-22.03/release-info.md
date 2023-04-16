@@ -1,7 +1,7 @@
-## OpenWrt 22.03.3 (stable)
+## OpenWrt 22.03.4 (stable)
 
 ### General Info
-- Based of openwrt 22.03.3
+- Based of openwrt 22.03.4
 
 ### Configuration
 - OpenWRT 22.03.3 Vanilla / Kernel 5.10
@@ -16,6 +16,7 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2023-04-16] Update haproxy / adguarhome
 - [2023-04-10] OpenWrt 22.03.4
 - [2023-01-07] Bundle kmods
 - [2023-01-04] Freeze to OpenWrt 22.03.3 release instead of branch
