@@ -1,10 +1,10 @@
-## OpenWrt 22.03.4 (stable)
+## OpenWrt 22.03.5 (stable)
 
 ### General Info
-- Based of openwrt 22.03.4
+- Based of openwrt 22.03.5
 
 ### Configuration
-- OpenWRT 22.03.3 Vanilla / Kernel 5.10
+- OpenWRT 22.03.5 Vanilla / Kernel 5.10
 - ImmortalWRT patches for Rockchip target NanoPi R2S (rk3328) / NanoPi R4S support (rk3399)
 - NanoPi R4S : r8168 driver for R4S (realtek) instead of kernel r8169 + r8169 firmwares package
 
@@ -16,6 +16,7 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2023-05-01] OpenWrt 22.03.5
 - [2023-04-16] Update haproxy / adguarhome
 - [2023-04-10] OpenWrt 22.03.4
 - [2023-01-07] Bundle kmods
