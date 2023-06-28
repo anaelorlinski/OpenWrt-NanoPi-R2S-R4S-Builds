@@ -18,7 +18,7 @@ Supported Models : R2S / R4S(1Gb & 4Gb) / R2C (Untested)
 [Download master Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-master&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-master/release-info.md)
 Supported Models : R2S / R4S(1Gb & 4Gb)
 
-## OpenWrt 21.02.5 (EOL)
+## OpenWrt 21.02.7 (EOL)
 
 [Download 21.02 Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-21.02&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-21.02/release-info.md)
 
