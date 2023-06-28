@@ -27,9 +27,8 @@ on:
         default: '22.03'
         type: choice
         options:
-        - '21.02'
         - '22.03'
-        - 'master'
+        - '23.05'
       model_R4S:
         description: 'Build R4S'
         type: boolean
@@ -69,7 +68,7 @@ jobs:
       run: |
           model_R4S="${{ fromJSON('["", "R4S"]')[github.event.inputs.model_R4S == 'true'] }}"
           model_R2S="${{ fromJSON('["", "R2S"]')[github.event.inputs.model_R2S == 'true'] }}"
-          model_R2C="${{ fromJSON('["", "R2C"]')[github.event.inputs.model_R2C == 'true' && (github.event.inputs.openwrt_branch == '21.02' || github.event.inputs.openwrt_branch == '22.03')] }}"
+          model_R2C="${{ fromJSON('["", "R2C"]')[github.event.inputs.model_R2C == 'true'] }}"
           models="$model_R4S $model_R2S $model_R2C"
           modelsJson=$(echo -n "$models" | jq -R -s -c 'split(" ") | map(select(length>0))')
           matrix="{\"nanopi_model\":$modelsJson}"
