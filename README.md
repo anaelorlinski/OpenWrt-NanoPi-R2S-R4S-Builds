@@ -13,7 +13,7 @@ If you like this project you can gift me a coffee !
 [Download 22.03 Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-22.03&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-22.03/release-info.md)
 Supported Models : R2S / R4S(1Gb & 4Gb) / R2C (Untested)
 
-## OpenWrt 23.05.0-rc2 (beta)
+## OpenWrt 23.05.0-rc3 (beta)
 
 [Download 23.05 Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-23.05&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-23.05/release-info.md)
 Supported Models : R2S / R4S(1Gb & 4Gb)

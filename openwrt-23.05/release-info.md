@@ -19,4 +19,5 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2023-08-22] OpenWrt 23.05.0-rc3
 - [2023-06-28] Initial OpenWrt 23.05.0-rc2
