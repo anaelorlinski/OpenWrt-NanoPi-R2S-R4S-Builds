@@ -51,6 +51,11 @@ fi
 # revert to fresh config
 cp $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/generic/config-5.15 target/linux/generic/config-5.15
 
+cat << "EOF" >> target/linux/generic/config-5.15
+# CONFIG_BLK_DEV_SX8 is not set
+EOF
+
+
 #cleanup
 if [ -e .config ]; then
    echo "Cleaning up ..."
