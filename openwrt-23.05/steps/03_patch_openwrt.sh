@@ -31,7 +31,7 @@ rsync -avz $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/target/ target
 cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/r8168 package/kernel/
 
 # enable armv8 crypto for mbedtls
-cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/mbedtls/patches/100-Implements-AES-and-GCM-with-ARMv8-Crypto-Extensions.patch \
+cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/mbedtls/patches/200-Implements-AES-and-GCM-with-ARMv8-Crypto-Extensions.patch \
    package/libs/mbedtls/patches/
 
 # enable motorcomm for R2C
