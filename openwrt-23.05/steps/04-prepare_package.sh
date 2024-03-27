@@ -28,6 +28,11 @@ cp -R ../stangri_repo/luci-app-pbr feeds/luci/applications/
 rm -rf feeds/packages/net/adguardhome
 cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/adguardhome feeds/packages/net/
 
+# replace libpfring that fails compiling
+rm -rf feeds/packages/libs/libpfring
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/libpfring feeds/packages/libs/
+
+
 ./scripts/feeds update -i && ./scripts/feeds install -a
 
 # Time stamp with $Build_Date=$(date +%Y.%m.%d)
