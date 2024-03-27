@@ -1,7 +1,7 @@
 ## OpenWrt 23.05
 
 ### General Info
-- Based of openwrt 23.05.2
+- Based of openwrt 23.05.3
 
 ### Notes
 - For R2C/R2S, theres almost no difference with official builds, except the preinstalled package set
@@ -19,6 +19,7 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2024-03-27] OpenWrt 23.05.3
 - [2023-11-15] OpenWrt 23.05.2
 - [2023-10-13] OpenWrt 23.05.0
 - [2023-08-22] OpenWrt 23.05.0-rc3
