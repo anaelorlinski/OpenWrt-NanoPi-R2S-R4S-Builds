@@ -1,5 +1,7 @@
 ## OpenWrt Builds for NanoPi R2S & NanoPi R4S
 Automated builds of OpenWrt for FriendlyARM NanoPi R2S & R4S boards
+ 
+⚠️ Since OpenWrt 23.05, those devices are supported by vanilla OpenWrt. You might want to use regular builds instead of this one, especially if you plan to add extra kernel modules for usb wifi support.
 
 Other Models : [R5S](https://github.com/anaelorlinski/OpenWrt-NanoPi-R5S-Builds/)
 
