@@ -24,7 +24,7 @@ on:
       openwrt_branch:
         description: 'OpenWrt Branch to build'     
         required: true
-        default: '22.03'
+        default: '23.05'
         type: choice
         options:
         - '22.03'
@@ -36,7 +36,7 @@ on:
       model_R2S:
         description: 'Build R2S'
         type: boolean
-        default: true
+        default: false
       model_R2C:
         description: 'Build R2C'
         type: boolean
@@ -94,7 +94,7 @@ jobs:
 
     - name: Set GITHUB_ENV
       run: |
-        echo "TZ=Europe/Paris" >>$GITHUB_ENV
+        echo "TZ=America/New_York" >>$GITHUB_ENV
         echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
         echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
         echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
