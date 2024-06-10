@@ -546,6 +546,16 @@ CONFIG_PACKAGE_lxc-usernsexec=y
 CONFIG_PACKAGE_lxc-wait=y
 CONFIG_PACKAGE_rpcd-mod-lxc=y
 CONFIG_PACKAGE_progress=y
+CONFIG_PACKAGE_6in4=y
+CONFIG_PACKAGE_cgroup-tools=y
+CONFIG_PACKAGE_ethtool=y
+CONFIG_PACKAGE_git-http=y
+CONFIG_PACKAGE_gnupg=y
+CONFIG_PACKAGE_luci-app-dockerman=y
+CONFIG_PACKAGE_luci-app-upnp=y
+CONFIG_PACKAGE_miniupnpd-nftables=y
+CONFIG_PACKAGE_pv=y
+CONFIG_PACKAGE_python3=y
 # end I added
 
 CONFIG_SOCAT_SSL=y
