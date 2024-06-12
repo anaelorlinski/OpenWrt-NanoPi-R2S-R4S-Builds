@@ -221,4 +221,4 @@ jobs:
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         bodyFile: "openwrt-${{ env.OPENWRT_BRANCH }}/release-info.md"
-        artifacts: ./artifact/*.img.gz, ./artifact/*.bom.cdx.json
+        artifacts: ./artifact/*.img.gz, ./artifact/*.bom.cdx.json, ./artifact/*.manifest
