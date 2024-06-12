@@ -1,0 +1,7 @@
+#!/bin/sh
+logger "enabling-eth-flow-control-from-hotplug"
+echo 20000 > /sys/class/net//gro_flush_timeout
+echo 1 > /sys/class/net//napi_defer_hard_irqs
+ethtool -C eth0 rx-usecs 1000 rx-frames 25
+ethtool -C eth0 tx-usecs 100 tx-frames 25
+ethtool -K sg on tso on
