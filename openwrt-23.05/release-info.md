@@ -19,9 +19,9 @@
 ### Applications
 - A useful set of applications from official OpenWrt package feed
 - Full build with LuCI, docker, LXC and extra packages
-- firewall4 based (nftables) + iptables compatibility packages for now, might change later.
-- pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
-- luci-app-dockerman latest version from https://github.com/lisaac/luci-app-dockerman
+- Firewall4 based (nftables) + iptables compatibility packages for now, might change later.
+- Latest version pbr from https://github.com/stangri/source.openwrt.melmac.net
+- Latest version luci-app-dockerman from https://github.com/lisaac/luci-app-dockerman
 
 ### Changelog
 - [2024-03-27] OpenWrt 23.05.3
