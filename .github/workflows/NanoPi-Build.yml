@@ -151,7 +151,7 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
     
-    - name: Load AO seed (mini)
+    - name: Load NK seed (mini)
       if: github.event.inputs.build_mini == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL mini
 
@@ -180,7 +180,7 @@ jobs:
       if: github.event.inputs.build_mini == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL mini $OPENWRT_BRANCH $RELTAG
     
-    - name: Load AO seed (full)
+    - name: Load NK seed (full)
       if: github.event.inputs.build_full == 'true'
       run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL full
 
@@ -216,9 +216,9 @@ jobs:
       with:
         name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_STRING }} 
         allowUpdates: true
-        tag: OpenWrtAO-${{ env.OPENWRT_BRANCH }}-${{ env.RELTAG }}
+        tag: OpenWrtNK-${{ env.OPENWRT_BRANCH }}-${{ env.RELTAG }}
         commit: main
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         bodyFile: "openwrt-${{ env.OPENWRT_BRANCH }}/release-info.md"
-        artifacts: ./artifact/*.img.gz
+        artifacts: ./artifact/*.img.gz, ./artifact/*.bom.cdx.json
