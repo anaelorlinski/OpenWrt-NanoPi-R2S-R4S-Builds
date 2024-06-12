@@ -3,6 +3,6 @@
 
 find /sys/devices/system/cpu/cpufreq/ -name rate_limit_us | while read RATEEVAL ; do echo 1000 > $RATEEVAL ; done # was 10000
 find /sys/devices/system/cpu/cpufreq/ -name scaling_min_freq | while read MINFREQ ; do echo 816000 > $MINFREQ ; done # was 408000
-lxc-autostart
+# lxc-autostart
 
 exit 0
