@@ -1,0 +1,4 @@
+#!/bin/sh
+logger "enabling-eth-flow-control-from-hotplug"
+ethtool -A eth0 autoneg on rx on tx on
+ethtool -A eth1 autoneg on rx on tx on
