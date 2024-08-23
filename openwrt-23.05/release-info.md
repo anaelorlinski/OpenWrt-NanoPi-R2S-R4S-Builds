@@ -1,7 +1,7 @@
 ## OpenWrt 23.05
 
 ### General Info
-- Based of openwrt 23.05.3
+- Based of openwrt 23.05.4
 
 ### Notes
 - R4S is over-clocked to 2.0GHz on a72 cores and 1.6GHz on a53 cores.
@@ -24,6 +24,7 @@
 - Latest version luci-app-dockerman from https://github.com/lisaac/luci-app-dockerman
 
 ### Changelog
+- [2024-07-22] OpenWrt 23.05.4
 - [2024-03-27] OpenWrt 23.05.3
 - [2023-11-15] OpenWrt 23.05.2
 - [2023-10-13] OpenWrt 23.05.0
