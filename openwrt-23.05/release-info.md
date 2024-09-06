@@ -19,6 +19,7 @@
 - pbr latest version from https://github.com/stangri/source.openwrt.melmac.net
 
 ### Changelog
+- [2024-09-06] Update adguardhome
 - [2024-07-22] OpenWrt 23.05.4
 - [2024-03-27] OpenWrt 23.05.3
 - [2023-11-15] OpenWrt 23.05.2
