@@ -12,7 +12,7 @@ cd "$ROOTDIR/build"
 
 # clone stangri repo
 rm -rf stangri_repo
-git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
+git clone --recurse-submodules https://github.com/stangri/source.openwrt.melmac.net stangri_repo
 
 # install feeds
 cd openwrt
