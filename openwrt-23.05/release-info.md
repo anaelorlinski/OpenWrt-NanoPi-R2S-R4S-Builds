@@ -11,7 +11,6 @@
 ### Configuration
 - OpenWRT 23.05 Vanilla / Kernel 5.15
 - ImmortalWRT patches for Rockchip target NanoPi R4S support (rk3399)
-- NanoPi R4S : r8168 driver for R4S (realtek) instead of kernel r8169 + r8169 firmwares package
 - Some network optimizations for reduced CPU usage
 - Load balancing: eth0 and eth1 interrupts on a72 cores; RX queues spread across all four a53 cores
 - 1024MB rootfs partition size
