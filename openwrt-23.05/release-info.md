@@ -24,6 +24,9 @@
 - Latest version luci-app-dockerman from https://github.com/lisaac/luci-app-dockerman
 
 ### Changelog
+- [2024-09-25] OpenWrt 23.05.5
+- [2024-09-07] Fix missing pbr
+- [2024-09-06] Update adguardhome
 - [2024-07-22] OpenWrt 23.05.4
 - [2024-03-27] OpenWrt 23.05.3
 - [2023-11-15] OpenWrt 23.05.2

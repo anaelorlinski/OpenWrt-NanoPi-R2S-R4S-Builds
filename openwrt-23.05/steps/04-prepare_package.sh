@@ -12,7 +12,13 @@ cd "$ROOTDIR/build"
 
 # clone stangri repo
 rm -rf stangri_repo
-git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
+mkdir stangri_repo
+cd stangri_repo
+# stick to version 1.1.6 of pbr for now
+git clone -b 1.1.6 https://github.com/stangri/pbr.git
+git clone https://github.com/stangri/luci-app-pbr.git
+#git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
+cd ..
 
 # clone lisaac/luci-app-dockerman repo
 rm -rf luci-app-dockerman-repo
@@ -31,10 +37,6 @@ cp -R ../stangri_repo/luci-app-pbr feeds/luci/applications/
 # replace adguardhome with prebuilt latest version
 rm -rf feeds/packages/net/adguardhome
 cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/adguardhome feeds/packages/net/
-
-# replace libpfring that fails compiling
-rm -rf feeds/packages/libs/libpfring
-cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/libpfring feeds/packages/libs/
 
 # replace luci-app-dockerman with latest version
 rm -rf feeds/luci/applications/luci-app-dockerman
