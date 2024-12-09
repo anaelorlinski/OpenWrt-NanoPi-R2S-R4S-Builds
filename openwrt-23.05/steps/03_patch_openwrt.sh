@@ -25,6 +25,9 @@ cp -R $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/rockchip target/linux
 # override manually some files in the rockchip target using rsync to merge folders and override same filenames
 rsync -avz $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/target/ target
 
+# -------------- Custom Files ----------------------------
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/files/ files/
+
 # ------------------ packages ------------------------------------
 
 # enable armv8 crypto for mbedtls
