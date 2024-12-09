@@ -1,7 +1,7 @@
 ## OpenWrt 23.05
 
 ### General Info
-- Based of openwrt 23.05.4
+- Based of openwrt 23.05.5
 
 ### Notes
 - R4S is over-clocked to 2.0GHz on a72 cores and 1.6GHz on a53 cores.
