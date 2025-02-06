@@ -27,3 +27,9 @@ if [[ "$1" == "R2C" ]]; then
 fi
 
 make defconfig
+
+sudo -E apt-get install -y python3-pyelftools
+sudo -E python3 -m pip install --user pyelftools
+apt-get install -y python3-pyelftools
+python3 -m pip install --user pyelftools
+
