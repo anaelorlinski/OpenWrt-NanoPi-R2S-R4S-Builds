@@ -29,7 +29,12 @@ fi
 make defconfig
 
 sudo -E apt-get install -y python3-pyelftools
-sudo -E python3 -m pip install --user pyelftools
+sudo -E python3 -m pip install --user pyelftools -y
 apt-get install -y python3-pyelftools
-python3 -m pip install --user pyelftools
+python3 -m pip install --user pyelftools -y
+python3 pip uninstall pyelftools -y
+python3 pip install pyelftools==0.29 -y
+
+pip uninstall pyelftools -y
+pip install pyelftools==0.29 -y
 

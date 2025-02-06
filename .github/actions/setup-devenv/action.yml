@@ -27,5 +27,9 @@ runs:
         sudo -E apt-get install clang llvm
         sudo -E apt-get clean -y
         sudo -E pip install --user pyelftools
+        sudo -E python3 pip uninstall pyelftools -y
+        sudo -E python3 pip install pyelftools==0.29 -y
+        python3 pip uninstall pyelftools -y
+        python3 pip install pyelftools==0.29 -y
         git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
         df -h
