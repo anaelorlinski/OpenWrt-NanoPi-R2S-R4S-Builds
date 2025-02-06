@@ -29,6 +29,7 @@ on:
         options:
         - '22.03'
         - '23.05'
+        - '24.10'
       model_R4S:
         description: 'Build R4S'
         type: boolean
