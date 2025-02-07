@@ -94,6 +94,7 @@ jobs:
       run: ./workflow-scripts/free_disk_space.sh
 
     - name: Setup Linux Requirements
+      if: runner.environment == 'github-hosted' # for GitHub hosted runners and 'self-hosted'
       uses: ./.github/actions/setup-devenv
 
     - name: Set GITHUB_ENV
