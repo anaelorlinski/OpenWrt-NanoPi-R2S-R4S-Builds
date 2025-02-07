@@ -90,7 +90,7 @@ jobs:
       uses: actions/checkout@main
     
     - name: Free space
-      if: runner.environment == github-hosted # for GitHub hosted runners and self-hosted
+      if: runner.environment == 'github-hosted' # for GitHub hosted runners and 'self-hosted'
       run: ./workflow-scripts/free_disk_space.sh
 
     - name: Setup Linux Requirements
