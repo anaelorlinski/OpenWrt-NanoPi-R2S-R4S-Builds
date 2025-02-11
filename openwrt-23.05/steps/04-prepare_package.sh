@@ -20,9 +20,25 @@ git clone https://github.com/stangri/luci-app-pbr.git
 #git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
 cd ..
 
-# clone lisaac/luci-app-dockerman repo
+# clone luci-app-dockerman repo
 rm -rf luci-app-dockerman-repo
-git clone https://github.com/lisaac/luci-app-dockerman luci-app-dockerman-repo
+mkdir luci-app-dockerman-repo
+cd luci-app-dockerman-repo
+# clone lisaac/luci-app-dockerman repo
+#rm -rf luci-app-dockerman-repo
+git clone https://github.com/lisaac/luci-app-dockerman
+#git clone https://github.com/lisaac/luci-app-dockerman luci-app-dockerman-repo
+cd ..
+
+# clone wrtbwmon repo
+rm -rf wrtbwmon_repo
+mkdir wrtbwmon_repo
+cd wrtbwmon_repo
+# clone brvphoenix/wrtbwmon repo
+git clone -b v1.2.1-3 https://github.com/brvphoenix/wrtbwmon.git
+# clone brvphoenix/luci-app-wrtbwmon repo
+git clone -b release-2.0.13 https://github.com/brvphoenix/luci-app-wrtbwmon.git
+cd ..
 
 # install feeds
 cd openwrt
@@ -41,6 +57,12 @@ cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/adguardhome feeds/package
 # replace luci-app-dockerman with latest version
 rm -rf feeds/luci/applications/luci-app-dockerman
 cp -R ../luci-app-dockerman-repo/applications/luci-app-dockerman feeds/luci/applications/
+
+# replace pbr packages
+rm -rf feeds/packages/net/wrtbwmon/
+cp -R ../wrtbwmon_repo/wrtbwmon feeds/packages/net/
+rm -rf feeds/luci/applications/luci-app-wrtbwmon
+cp -R ../wrtbwmon_repo/luci-app-wrtbwmon feeds/luci/applications/
 
 ./scripts/feeds update -i && ./scripts/feeds install -a
 
