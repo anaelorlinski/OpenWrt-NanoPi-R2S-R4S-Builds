@@ -7,6 +7,7 @@ if [ ! -e "$ROOTDIR/LICENSE" ]; then
 fi
 
 cd $ROOTDIR
+rm -rf build
 mkdir build
 cd build
 
