@@ -15,11 +15,11 @@ OPENWRT_BRANCH=24.10
 # replace uboot with local uboot package
 # this version does not need arm-trusted-firmware-rk3328
 # rm -rf package/boot/uboot-rockchip
-# cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/uboot-rockchip package/boot/
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/uboot-rockchip package/boot/
 
 # -------------- target linux/rockchip ----------------
 # replace target rockchip with original one
-rm -rf target/linux/rockchip
+#rm -rf target/linux/rockchip
 cp -R $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/rockchip target/linux/
 
 # override manually some files in the rockchip target using rsync to merge folders and override same filenames
