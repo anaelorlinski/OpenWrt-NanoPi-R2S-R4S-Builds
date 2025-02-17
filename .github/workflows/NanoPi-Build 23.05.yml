@@ -1,0 +1,229 @@
+#=================================================
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+
+name: NanoPi Build 23.05
+
+on:
+#  release:
+#    types: published
+  #push:
+  #  branches:
+  #    - 21.02
+  #  paths:
+  #    - '.github/workflows/openwrt-rockchip-2102.yml'
+  #    - 'step/00-prepare_openwrt.sh'
+  #    - 'step/01-prepare_package.sh'
+  #    - 'seed/rockchip.seed'
+  #schedule:
+  #  - cron: 30 21 * * *
+  #watch:
+  #  types: started
+  workflow_dispatch:
+    inputs:
+      openwrt_branch:
+        description: 'OpenWrt Branch to build'     
+        required: true
+        default: '23.05'
+        type: choice
+        options:
+        #- '22.03'
+        - '23.05'
+        #- '24.10'
+      model_R4S:
+        description: 'Build R4S'
+        type: boolean
+        default: true
+      #model_R2S:
+      #  description: 'Build R2S'
+      #  type: boolean
+      #  default: false
+      #model_R2C:
+      #  description: 'Build R2C'
+      #  type: boolean
+      #  default: false
+      #build_mini:
+      #  description: 'Build mini seed'
+      #  type: boolean
+      #  default: false
+      build_full:
+        description: 'Build full seed'
+        type: boolean
+        default: true
+jobs:
+  init:
+    #runs-on: ubuntu-22.04
+    runs-on: self-hosted
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    # Map a step output to a job output
+    outputs:
+      build_string: ${{ steps.gen_build_string.outputs.build_string }}
+      release_tag: ${{ steps.gen_release_tag.outputs.release_tag }}
+      matrix: ${{ steps.build_matrix.outputs.matrix }}
+    steps:
+    - id: gen_build_string
+      run: echo "build_string=$(date +%Y.%m.%d)" >> $GITHUB_OUTPUT
+    - id: gen_release_tag
+      run: echo "release_tag=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+    - id: build_matrix
+      run: |
+          model_R4S="${{ fromJSON('["", "R4S"]')[github.event.inputs.model_R4S == 'true'] }}"
+          model_R2S="${{ fromJSON('["", "R2S"]')[github.event.inputs.model_R2S == 'true'] }}"
+          model_R2C="${{ fromJSON('["", "R2C"]')[github.event.inputs.model_R2C == 'true'] }}"
+          models="$model_R4S $model_R2S $model_R2C"
+          modelsJson=$(echo -n "$models" | jq -R -s -c 'split(" ") | map(select(length>0))')
+          matrix="{\"nanopi_model\":$modelsJson}"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+  
+  build:
+    needs: init
+    strategy:
+      matrix: ${{ fromJson(needs.init.outputs.matrix) }}
+    
+    #runs-on: ubuntu-22.04
+    runs-on: self-hosted
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@main
+    
+    - name: Free space
+      if: runner.environment == 'github-hosted' # for GitHub hosted runners and 'self-hosted'
+      run: ./workflow-scripts/free_disk_space.sh
+
+    - name: Setup Linux Requirements
+      if: runner.environment == 'github-hosted' # for GitHub hosted runners and 'self-hosted'
+      uses: ./.github/actions/setup-devenv
+
+    - name: Set GITHUB_ENV
+      run: |
+        echo "TZ=America/New_York" >>$GITHUB_ENV
+        echo "BUILD_STRING=${{ needs.init.outputs.build_string }}" >> $GITHUB_ENV
+        echo "RELTAG=${{ needs.init.outputs.release_tag }}" >> $GITHUB_ENV
+        echo "OPENWRT_BRANCH=${{ github.event.inputs.openwrt_branch }}" >> $GITHUB_ENV
+        echo "NANOPI_MODEL=${{ matrix.nanopi_model }}" >> $GITHUB_ENV
+        echo "BUILD_MINI=${{ github.event.inputs.build_mini }}" >> $GITHUB_ENV
+        echo "BUILD_FULL=${{ github.event.inputs.build_full }}" >> $GITHUB_ENV
+
+    - name: Show GITHUB_ENV
+      run: echo $GITHUB_ENV
+
+    - name: Clone OpenWrt source
+      run: ./openwrt-$OPENWRT_BRANCH/steps/01_clone_openwrt.sh
+    
+    - name: Make working copy of OpenWrt source
+      run: ./openwrt-$OPENWRT_BRANCH/steps/02_prepare_openwrt_folder.sh
+    
+    - name: Patch OpenWrt Source
+      run: ./openwrt-$OPENWRT_BRANCH/steps/03_patch_openwrt.sh
+    
+    - name: Prepare package
+      run: ./openwrt-$OPENWRT_BRANCH/steps/04-prepare_package.sh
+    
+    - name: Add ACL
+      run: ./openwrt-$OPENWRT_BRANCH/steps/05-create_luci_acl.sh
+    
+    - name: Load toolchain seed
+      run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL full
+        
+    - name: Download package
+      id: package
+      run: |
+        cd build/openwrt
+        make download -j10
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Make toolchain-aarch64
+      id: compiletoolchain
+      continue-on-error: true
+      run: |
+        cd build/openwrt
+        let make_process=$(nproc)+1
+        make toolchain/install -j${make_process}
+    
+    - name: If toolchain Error
+      if: steps.compiletoolchain.outcome == 'failure'
+      run: |
+        echo '================================================================'
+        cd build/openwrt && make toolchain/install -j1 V=s
+    
+    - name: Dump github context
+      run: echo "$GITHUB_CONTEXT"
+      shell: bash
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+    
+    - name: Load NK seed (mini)
+      if: github.event.inputs.build_mini == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL mini
+
+    - name: Build kmods (mini)
+      if: github.event.inputs.build_mini == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/07-all_kmods.sh
+
+    - name: Compile OpenWRT (mini)
+      id: compileopenwrtmini
+      if: github.event.inputs.build_mini == 'true'
+      continue-on-error: true
+      run: |
+        cd build/openwrt
+        let make_process=$(nproc)+1
+        make -j${make_process} || make -j${make_process}
+    
+    - name: If compile openwrt Error
+      if: github.event.inputs.build_mini == 'true' && steps.compileopenwrtmini.outcome == 'failure'
+      run: |
+        cat build/openwrt/.config
+        echo '================================================================'
+        cd build/openwrt && make -j1 V=s
+    
+    - name: Organize files (mini)
+      id: organizemini
+      if: github.event.inputs.build_mini == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL mini $OPENWRT_BRANCH $RELTAG
+    
+    - name: Load NK seed (full)
+      if: github.event.inputs.build_full == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/06-create_config_from_seed.sh $NANOPI_MODEL full
+
+    - name: Build kmods (full)
+      if: github.event.inputs.build_full == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/07-all_kmods.sh
+
+    - name: Compile OpenWRT (full)
+      id: compileopenwrtfull
+      if: github.event.inputs.build_full == 'true'
+      continue-on-error: true
+      run: |
+        cd build/openwrt
+        let make_process=$(nproc)+1
+        make -j${make_process} || make -j${make_process}
+    
+    - name: If compile openwrt Error
+      if: github.event.inputs.build_full == 'true' && steps.compileopenwrtfull.outcome == 'failure'
+      run: |
+        cat build/openwrt/.config
+        echo '================================================================'
+        cd build/openwrt && make -j1 V=s
+    
+    - name: Organize files (full)
+      id: organizefull
+      if: github.event.inputs.build_full == 'true'
+      run: ./openwrt-$OPENWRT_BRANCH/steps/organize_files.sh $NANOPI_MODEL full $OPENWRT_BRANCH $RELTAG
+
+    - name: Create release
+      id: create_release
+      uses: ncipollo/release-action@v1.11.1
+      if: ${{ !cancelled() }}
+      with:
+        name: OpenWrt ${{ env.OPENWRT_BRANCH }} ${{ env.BUILD_STRING }} 
+        allowUpdates: true
+        tag: OpenWrtNK-${{ env.OPENWRT_BRANCH }}-${{ env.RELTAG }}
+        commit: main
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        bodyFile: "openwrt-${{ env.OPENWRT_BRANCH }}/release-info.md"
+        artifacts: ./artifact/*.img.gz, ./artifact/*.bom.cdx.json, ./artifact/*.manifest

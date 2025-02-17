@@ -2,7 +2,7 @@
 # Description: Build OpenWrt using GitHub Actions
 # Lisence: MIT
 
-name: NanoPi Build
+name: NanoPi Build 24.10
 
 on:
 #  release:
@@ -24,28 +24,28 @@ on:
       openwrt_branch:
         description: 'OpenWrt Branch to build'     
         required: true
-        default: '23.05'
+        default: '24.10'
         type: choice
         options:
-        - '22.03'
-        - '23.05'
+        #- '22.03'
+        #- '23.05'
         - '24.10'
       model_R4S:
         description: 'Build R4S'
         type: boolean
         default: true
-      model_R2S:
-        description: 'Build R2S'
-        type: boolean
-        default: false
-      model_R2C:
-        description: 'Build R2C'
-        type: boolean
-        default: false
-      build_mini:
-        description: 'Build mini seed'
-        type: boolean
-        default: false
+      #model_R2S:
+      #  description: 'Build R2S'
+      #  type: boolean
+      #  default: false
+      #model_R2C:
+      #  description: 'Build R2C'
+      #  type: boolean
+      #  default: false
+      #build_mini:
+      #  description: 'Build mini seed'
+      #  type: boolean
+      #  default: false
       build_full:
         description: 'Build full seed'
         type: boolean
