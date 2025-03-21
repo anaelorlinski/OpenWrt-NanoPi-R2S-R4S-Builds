@@ -26,6 +26,9 @@ make toolchain/install -j${make_process} || { make toolchain/install -j 1 V=s ; 
 make target/compile -j ${make_process} || { make target/compile -j 1 V=s ; exit 1 ; }
 make package/linux/compile -j ${make_process} || { make package/linux/compile -j 1 V=s ; exit 1 ; }
 
+# make packages that generate kmods
+make package/kernel/mt76/compile -j ${make_process} || { make package/linux/compile -j 1 V=s ; exit 1 ; }
+
 # build signing tools and generate key
 make package/usign/host/compile V=s || exit 1
 make package/ucert/host/compile V=s || exit 1

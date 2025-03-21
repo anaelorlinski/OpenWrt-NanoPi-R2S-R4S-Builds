@@ -24,11 +24,11 @@ on:
       openwrt_branch:
         description: 'OpenWrt Branch to build'     
         required: true
-        default: '22.03'
+        default: '24.10'
         type: choice
         options:
-        - '22.03'
         - '23.05'
+        - '24.10'
       model_R4S:
         description: 'Build R4S'
         type: boolean
