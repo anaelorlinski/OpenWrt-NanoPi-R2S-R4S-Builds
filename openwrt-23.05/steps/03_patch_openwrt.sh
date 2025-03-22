@@ -28,9 +28,8 @@ rsync -avz $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/target/ target
 # ------------------ packages ------------------------------------
 
 # enable armv8 crypto for mbedtls
-#TODO : reenable
-#cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/mbedtls/patches/200-Implements-AES-and-GCM-with-ARMv8-Crypto-Extensions.patch \
-#   package/libs/mbedtls/patches/
+cp $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/mbedtls/patches/200-Implements-AES-and-GCM-with-ARMv8-Crypto-Extensions.patch \
+   package/libs/mbedtls/patches/
 
 # enable motorcomm for R2C
 echo "CONFIG_MOTORCOMM_PHY=y" >> target/linux/rockchip/armv8/config-5.15
