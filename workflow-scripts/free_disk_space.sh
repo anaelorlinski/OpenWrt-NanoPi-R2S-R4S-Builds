@@ -46,5 +46,14 @@ echo "Removing large directories"
 # deleting 15GB
 rm -rf /usr/share/dotnet/
 sudo rm -rf /usr/local/lib/android
+sudo rm -rf /usr/local/lib/heroku
+sudo rm -rf /usr/local/lib/node_modules
+sudo rm -rf /opt/az
+sudo rm -rf /opt/microsoft/powershell
+sudo rm -rf /usr/local/share/powershell
+sudo rm -rf /opt/hostedtoolcache/CodeQL
+sudo rm -rf /opt/hostedtoolcache/go 
+sudo rm -rf /opt/hostedtoolcache/node
+sudo rm -rf /usr/local/aws-sam-cil /usr/local/julia*
 rm -rf /opt/ghc
 df -h
