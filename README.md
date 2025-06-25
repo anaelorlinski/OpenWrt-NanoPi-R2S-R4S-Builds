@@ -10,7 +10,7 @@ Other Models : [R5S](https://github.com/anaelorlinski/OpenWrt-NanoPi-R5S-Builds/
 If you like this project you can gift me a coffee !
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate/?business=8XQTGXAHEAKPY&no_recurring=0&currency_code=EUR)
 
-## OpenWrt 24.10.1 (current)
+## OpenWrt 24.10.2 (current)
 
 [Download 24.10 Releases](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/releases?q=OpenWrtAO-24.10&expanded=true) [Changelog](https://github.com/anaelorlinski/OpenWrt-NanoPi-R2S-R4S-Builds/blob/main/openwrt-24.10/release-info.md)
 Supported Models : R2S / R4S(1Gb & 4Gb)
