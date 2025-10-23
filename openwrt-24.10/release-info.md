@@ -1,7 +1,7 @@
 ## OpenWrt 24.10
 
 ### General Info
-- Based of openwrt 24.10.2
+- Based of openwrt 24.10.4
 
 ### Notes
 - For R2C/R2S, theres almost no difference with official builds, except the preinstalled package set
@@ -24,3 +24,4 @@
 - [2025-04-14] OpenWrt 24.10.1
 - [2025-06-25] OpenWrt 24.10.2
 - [2025-10-10] OpenWrt 24.10.3
+- [2025-10-23] OpenWrt 24.10.4
