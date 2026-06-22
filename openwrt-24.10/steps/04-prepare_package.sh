@@ -15,8 +15,8 @@ rm -rf stangri_repo
 mkdir stangri_repo
 cd stangri_repo
 # stick to version 1.1.8 of pbr for now
-git clone -b 1.1.8 https://github.com/stangri/pbr.git
-git clone -b 1.1.8 https://github.com/stangri/luci-app-pbr.git
+git clone -b 1.2.2 https://github.com/stangri/pbr.git
+git clone -b 1.2.2 https://github.com/stangri/luci-app-pbr.git
 #git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
 cd ..
 

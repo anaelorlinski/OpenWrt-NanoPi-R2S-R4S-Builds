@@ -1,7 +1,7 @@
 ## OpenWrt 24.10
 
 ### General Info
-- Based of openwrt 24.10.5
+- Based of openwrt 24.10.7
 
 ### Notes
 - For R2C/R2S, theres almost no difference with official builds, except the preinstalled package set
@@ -17,7 +17,7 @@
 - Mini build without UI
 - Full build with LuCI, docker and extra packages
 - firewall4 based (nftables) + iptables compatibility packages for now, might change later.
-- pbr branch 1.1.8 from https://github.com/stangri/pbr
+- pbr branch 1.2.2 from https://github.com/stangri/pbr
 
 ### Changelog
 - [2025-03-21] Initial OpenWrt 24.10.0
@@ -27,3 +27,4 @@
 - [2025-10-23] OpenWrt 24.10.4
 - [2025-11-02] Update adguardhome
 - [2025-12-19] OpenWrt 24.10.5 + update adguardhome
+- [2026-06-22] OpenWrt 24.10.7 + update pbr
