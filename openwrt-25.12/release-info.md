@@ -1,7 +1,7 @@
 ## OpenWrt 25.12
 
 ### General Info
-- Based on openwrt 25.12.0-rc5
+- Based on openwrt 25.12.4
 
 ### Notes
 - For R2C/R2S, theres almost no difference with official builds, except the preinstalled package set
@@ -17,7 +17,7 @@
 - Mini build without UI
 - Full build with LuCI, docker and extra packages
 - firewall4 based (nftables) + iptables compatibility packages for now, might change later.
-- pbr branch 1.2.0 from https://github.com/mossdef-org/pbr/
+- pbr branch 1.2.2 from https://github.com/mossdef-org/pbr/
 
 ### Kernel Modules
 - Some kernel modules are built and bundled in the images in /apks/ so they can be installed without package mismatch error
@@ -25,4 +25,4 @@
 - run apk update before installing new packages to pickup local packages
 
 ### Changelog
-- [2026-02-22] Initial OpenWrt 25.12.0-rc5
+- [2026-06-22] Initial OpenWrt 25.12.4
