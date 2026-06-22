@@ -42,6 +42,6 @@ find ../../bin/targets/rockchip/armv8/packages/ -type f -exec ln {} . \;
 cd ..
 mkdir -p etc/uci-defaults
 cat << "EOF" > etc/uci-defaults/99-local-apks
-echo "src/gz local file:///apks/" >> /etc/opkg/distfeeds.conf
+echo 'file:///apks' >> /etc/apk/repositories
 EOF
 

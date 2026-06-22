@@ -14,9 +14,9 @@ cd "$ROOTDIR/build"
 rm -rf stangri_repo
 mkdir stangri_repo
 cd stangri_repo
-# use version 1.2.0 of pbr for now
-git clone -b 1.2.0 https://github.com/mossdef-org/pbr.git
-git clone -b 1.2.0 https://github.com/mossdef-org/luci-app-pbr.git
+# use version 1.2.2 of pbr for now
+git clone -b 1.2.2 https://github.com/mossdef-org/pbr.git
+git clone -b 1.2.2 https://github.com/mossdef-org/luci-app-pbr.git
 #git clone https://github.com/stangri/source.openwrt.melmac.net stangri_repo
 cd ..
 
