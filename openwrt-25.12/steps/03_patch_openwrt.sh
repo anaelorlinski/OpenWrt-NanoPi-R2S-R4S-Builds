@@ -18,9 +18,9 @@ rm -rf package/boot/uboot-rockchip
 cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/uboot-rockchip package/boot/
 
 # -------------- target linux/rockchip ----------------
-# replace target rockchip with original one
-rm -rf target/linux/rockchip
-cp -R $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/rockchip target/linux/
+# restore target rockchip to the pinned revision (set in step 02)
+git checkout HEAD -- target/linux/rockchip
+git clean -fdq target/linux/rockchip
 
 # override manually some files in the rockchip target using rsync to merge folders and override same filenames
 rsync -avz $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/target/ target
@@ -46,8 +46,8 @@ else
    echo "Already added $ADDON_PATH to $ADDON_DEST"
 fi
 
-# revert to fresh config
-cp $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/generic/config-6.12 target/linux/generic/config-6.12
+# revert to pristine config of the pinned revision
+git checkout HEAD -- target/linux/generic/config-6.12
 
 #cat << "EOF" >> target/linux/generic/config-6.12
 # CONFIG_BLK_DEV_SX8 is not set
@@ -57,7 +57,7 @@ cp $BUILDDIR/openwrt-fresh-$OPENWRT_BRANCH/target/linux/generic/config-6.12 targ
 #cleanup
 if [ -e .config ]; then
    echo "Cleaning up ..."
-   make target/linux/clean
+   #make target/linux/clean
    make package/boot/uboot-rockchip/clean
    make package/kernel/r8168/clean
 fi
