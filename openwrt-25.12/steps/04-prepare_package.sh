@@ -34,6 +34,11 @@ cp -R ../stangri_repo/luci-app-pbr feeds/luci/applications/
 rm -rf feeds/packages/net/adguardhome
 cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/adguardhome feeds/packages/net/
 
+# replace ddns-scripts with openwrt-25.12 branch version (packages 4465c556a) for ddns-scripts-gandi-v2
+# TODO: remove once the pinned packages feed includes it (25.12.6 ?)
+rm -rf feeds/packages/net/ddns-scripts
+cp -R $ROOTDIR/openwrt-$OPENWRT_BRANCH/patches/package/ddns-scripts feeds/packages/net/
+
 ./scripts/feeds update -i && ./scripts/feeds install -a
 
 # Time stamp with $Build_Date=$(date +%Y.%m.%d)
